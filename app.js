@@ -80,10 +80,5 @@ app.listen(_PORT, () => {
 });
 
 
-// Just checking git is ok now...
-
-
-console.log("Wow")
-
 // Export the app for testing or other modules
 module.exports = app;
