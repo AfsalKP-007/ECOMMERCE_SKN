@@ -1,0 +1,227 @@
+<!-- /*
+* Bootstrap 5
+* Template Name: Furni
+* Template Author: Untree.co
+* Template URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+*/ -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Untree.co">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <meta name="description" content="" />
+  <meta name="keywords" content="bootstrap, bootstrap4" />
+
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<link href="css/tiny-slider.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+	</head>
+
+	<%- include('../partials/user/header') %>
+	
+
+
+	<body>
+
+
+	
+		<div class="col-12" style="margin-top: 20px; margin-left: 20px;" >
+
+			<form id="filterForm" action="/shop" method="GET" class="col-10">
+						
+
+			<div class="d-flex flex-wrap align-items-center justify-content-between w-100 gap-3"  style="width: 100%;" >
+                 
+				<div class="d-flex gap-3" style="width: 100%">
+
+
+				
+					<div class="input-group w-50">
+
+						<input id="searchInput" type="text" id="advanced-search-glow" name="search" class="form-control" placeholder="Search products..." autocomplete="off">
+					
+				    </div>
+
+
+					<select id="categorySelect" name="category" class="form-control w-50">
+						<option value="">All Category</option>
+						<% if (categories && categories.length > 0) { %>
+							<% categories.forEach(category => { %>
+								<option value="<%= category._id %>" <%= category._id == category ? "selected" : "" %> >
+									<%= category.name %>
+								</option>
+							<% }); %>
+						<% } else { %>
+							<option disabled>No categories available</option>
+						<% } %>
+					</select>
+
+
+
+					<div class="form-group w-50">
+						<select id="sortSelect" name="sort" class="form-control">
+						  <option value="">Sort: Default</option>
+						  <option value="price_asc">Price: Low to High</option>
+						  <option value="price_desc">Price: High to Low</option>
+						  <option value="name_asc">Name: A to Z</option>
+						  <option value="name_desc">Name: Z to A</option>
+						</select>
+					  </div>
+
+					  
+						<button type="button" id="clearButton" style="width: 70px; height: 50px ;">
+							<i class="fa-solid fa-trash"></i>
+						</button>   
+					  	 
+						<button type="submit" style="width: 200px; height: 50px ;" class="" id="applyButton">Apply</button>
+						   <!-- For Sapcing -->
+						   <div class="w-50"></div>
+
+					  </div>
+				</div>					
+			</form>
+		</div>
+
+
+			<div class="product-section">
+			<div class="container mt-12">		
+
+		      	<div class="row">
+		      		
+					<% for(i = 0; i < products.length; i++ ) { %>
+
+						<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+							<a class="product-item" href="/productDetails?id=<%=products[i]._id%>">
+								<img src="<%= products[i].photos[0] %>" class="img-fluid product-thumbnail">
+								<h3 class="product-title"> <%=products[i].name%> </h3>
+								<strong class="product-price">₹ <%=products[i].salePrice%>.00 </strong>
+								<h3><%= products[i].category ? products[i].category.name : 'N/A' %> </h3>
+
+	
+								<span class="icon-cross">
+									<img src="images/cross.svg" class="img-fluid">
+								</span>
+							</a>
+						</div> 
+					<%}%>
+				</div>
+
+
+					<!-- End Column 1 -->
+				
+		      	</div>
+		    </div>
+		</div>
+
+
+		<nav aria-label="Page navigation">
+			<ul class="pagination justify-content-center">
+				<!-- Previous Button -->
+				<% if (currentPage > 1) { %>
+					<li class="page-item">
+						<a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+					</li>
+				<% } else { %>
+					<li class="page-item disabled">
+						<span class="page-link">Previous</span>
+					</li>
+				<% } %>
+		
+				<!-- Page Numbers -->
+				<% for (let i = 1; i <= totalPages; i++) { %>
+					<li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
+						<a class="page-link" href="?page=<%= i %>"><%= i %></a>
+					</li>
+				<% } %>
+		
+				<!-- Next Button -->
+				<% if (currentPage < totalPages) { %>
+					<li class="page-item">
+						<a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+					</li>
+				<% } else { %>
+					<li class="page-item disabled">
+						<span class="page-link">Next</span>
+					</li>
+				<% } %>
+			</ul>
+		</nav>
+
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+
+
+	</body>
+
+
+	<%- include('../partials/user/footer') %>
+
+
+	<script>
+
+
+// Form reference
+const form = document.getElementById("filterForm");
+
+// Inputs reference
+const searchInput = document.getElementById("searchInput");
+const categorySelect = document.getElementById("categorySelect");
+const sortSelect = document.getElementById("sortSelect");
+const applyButton = document.getElementById("applyButton");
+const clearButton = document.getElementById("clearButton");
+
+// Restore values from URL on page load
+document.addEventListener("DOMContentLoaded", function () {
+	
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.get("search")) searchInput.value = urlParams.get("search");
+    if (urlParams.get("category")) categorySelect.value = urlParams.get("category");
+    if (urlParams.get("sort")) sortSelect.value = urlParams.get("sort");
+
+});
+
+// Apply button click event (Handles Form Submission)
+applyButton.addEventListener("click", function (event) {
+    event.preventDefault(); // Prevent default form submit
+
+    // Get user inputs
+    const searchValue = searchInput.value.trim();
+    const categoryValue = categorySelect.value;
+    const sortValue = sortSelect.value;
+
+    // Construct query parameters
+    let queryParams = new URLSearchParams();
+    if (searchValue) queryParams.append("search", searchValue);
+    if (categoryValue) queryParams.append("category", categoryValue);
+    if (sortValue) queryParams.append("sort", sortValue);
+
+    window.location.href = `/shop?${queryParams.toString()}`;
+});
+
+// Clear All Filters & Reset Inputs
+clearButton.addEventListener("click", function () {
+    // Clear input fields
+    searchInput.value = "";
+    categorySelect.value = "";
+    sortSelect.value = "";
+
+    // Reload the page without query parameters
+    window.location.href = "/shop";
+});
+
+
+
+</script>
+
+	
+
+</html>

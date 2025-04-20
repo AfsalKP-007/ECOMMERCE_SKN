@@ -1,0 +1,372 @@
+
+<%- include('../partials/user/header') %>
+
+
+
+
+	<body>
+
+		
+
+		<!-- header Integration -->
+	
+
+		<!-- Start Hero Section -->
+			<div id="mainDiv" class="hero">
+				<div class="container">
+					<div class="row justify-content-between">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>LATEST SKIN CARE COLLLECTOIN<span clsas="d-block"> FOR WOMEN</span></h1>
+								<p class="mb-4">The wonders of having a perfect skin that you’ve always dreamt of having. that too close to where you can reach..</p>
+								<p>
+									<a href="/shop" class="btn btn-secondary me-2">Shop Now</a>
+									<a href="/shop" class="btn btn-white-outline">Explore</a>
+								</p>
+							</div>
+						</div>
+						<div class="col-lg-7">
+							<div class="hero-img-wrap">
+								<img src="images/3333.jpg" class="img-fluid">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- End Hero Section -->
+
+		<!-- Start Product Section -->
+		<div class="product-section">
+			<div class="container">
+				<div class="row">
+
+					<!-- Start Column 1 -->
+					<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
+						<h2 class="mb-4 section-title">Skin.Fit – Elevate Your Skincare Routine.</h2>
+						<p class="mb-4">Crafted with excellent ingredients, Skin.Fit brings you a premium collection of skincare essentials designed for modern women.
+							 Our products are carefully formulated to nourish, protect, and enhance your skin, ensuring a radiant and healthy glow every day.
+							  Experience beauty with confidence – because your skin deserves the best.. </p>
+						<p><a href="shop.html" class="btn">Explore</a></p>
+					</div> 
+					<!-- End Column 1 -->
+
+					<!-- Start Product Delegate -->
+
+					<%for(let i=0;i< products.length; i++){%>
+
+					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+						<a class="product-item" href="/productDetails?id=<%=products[i]._id%>">
+							<img src="<%= products[i].photos[0] %>"  class="img-fluid product-thumbnail">
+							<h3 class="product-title"><%=products[i].name%> </h3>
+							<strong class="product-price">₹ <%=products[i].regularPrice%>.00</strong>
+							
+							<h3><%= products[i].category ? products[i].category.name : 'N/A' %> </h3>
+
+
+							<span class="icon-cross">
+								<img src="images/cross.svg" class="img-fluid">
+							</span>
+						</a>
+					</div> 
+
+					<%}%>
+					<!-- End Column 2 -->				
+
+				</div>
+			</div>
+		</div>
+		<!-- End Product Section -->
+
+		<!-- Start Why Choose Us Section -->
+		<div class="why-choose-section">
+			<div class="container">
+				<div class="row justify-content-between">
+					<div class="col-lg-6">
+						<h2 class="section-title">Why Choose Us</h2>
+						<p>At Skin.Fit, we prioritize quality, innovation, and skincare that truly works.
+							 Our products are crafted with carefully selected ingredients to nourish and enhance your skin’s natural beauty.
+							 Whether you're looking for hydration, protection, or rejuvenation, Skin.Fit offers skincare solutions tailored to your needs. 
+							 Experience the perfect blend of science and nature for healthy, glowing skin every day..
+							</p>
+
+						<div class="row my-5">
+							<div class="col-6 col-md-6">
+								<div class="feature">
+									<div class="icon">
+										<img src="images/truck.svg" alt="Image" class="imf-fluid">
+									</div>
+									<h3>Fast &amp; Free Shipping</h3>
+									<p>Enjoy a seamless shopping experience with Skin.Fit! We offer fast and free shipping on all orders,
+										 ensuring your favorite skincare essentials reach your doorstep without delay.
+										 Pamper your skin without the wait!
+										</p>
+								</div>
+							</div>
+
+							<div class="col-6 col-md-6">
+								<div class="feature">
+									<div class="icon">
+										<img src="images/bag.svg" alt="Image" class="imf-fluid">
+									</div>
+									<h3>Easy to Shop</h3>
+									<p>Shopping for skincare has never been this effortless! With Skin.Fit, you get a smooth and user-friendly experience, 
+										from browsing to checkout. Discover your favorite products, add them to your cart, 
+										and enjoy hassle-free purchasing—all in just a few clicks!.
+									</p>
+								</div>
+							</div>
+
+							<div class="col-6 col-md-6">
+								<div class="feature">
+									<div class="icon">
+										<img src="images/support.svg" alt="Image" class="imf-fluid">
+									</div>
+									<h3>24/7 Support</h3>
+									<p>We’re here for you anytime, anywhere! Skin.Fit offers round-the-clock customer support to assist you with any questions or concerns. 
+										Whether you need help choosing the right product or tracking your order, our team is always ready to assist you..</p>
+								</div>
+							</div>
+
+							<div class="col-6 col-md-6">
+								<div class="feature">
+									<div class="icon">
+										<img src="images/return.svg" alt="Image" class="imf-fluid">
+									</div>
+									<h3>Hassle Free Returns</h3>
+									<p>Your satisfaction is our priority! If you're not completely happy with your purchase, 
+										Skin.Fit offers an easy and hassle-free return process. Shop with confidence, knowing that we’ve got you covered..
+									</p>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="col-lg-5">
+						<div class="img-wrap">
+							<img src="images/twoFaces.png" alt="Image" class="img-fluid">
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<!-- End Why Choose Us Section -->
+
+		<!-- Start We Help Section -->
+		<div class="we-help-section">
+			<div class="container">
+				<div class="row justify-content-between">
+					<div class="col-lg-7 mb-5 mb-lg-0">
+						<div class="imgs-grid">
+							<div class="grid grid-1"><img src="images/twoHair.png" alt="Untree.co"></div>
+							<div class="grid grid-2"><img src="images/singleWomen.jpg" alt="Untree.co"></div>
+							<div class="grid grid-3"><img src="images/twoFaces.png" alt="Untree.co"></div>
+						</div>
+					</div>
+					<div class="col-lg-5 ps-lg-5">
+						<h2 class="section-title mb-4">Enhance Your Glow with Skin.Fit</h2>
+						<p>Transform your space with elegance and style! At Skin.Fit,
+							 we believe that beauty isn’t just about skincare—it’s about creating a lifestyle you love. 
+							 Whether it’s minimalist aesthetics or contemporary charm,
+							  we provide inspiration and expert tips to help you craft a modern and sophisticated interior that reflects your personality.
+							  Let’s make your space as radiant as your skin!
+						</p>
+
+					
+						<p><a herf="#" class="btn">Explore</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End We Help Section -->
+
+		
+		<!-- Start Testimonial Slider -->
+		<div class="testimonial-section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-7 mx-auto text-center">
+						<h2 class="section-title">Testimonials</h2>
+					</div>
+				</div>
+
+				<div class="row justify-content-center">
+					<div class="col-lg-12">
+						<div class="testimonial-slider-wrap text-center">
+
+							<div id="testimonial-nav">
+								<span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+								<span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+							</div>
+
+							<div class="testimonial-slider">
+								
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;Finally, a skincare brand that understands my needs! The products are gentle yet effective, and I’ve noticed a visible difference in my skin’s texture and glow.&rdquo;</p>
+												</blockquote>
+
+												<div class="author-info">
+													<div class="author-pic">
+														<img src="images/person-1.png" alt="Maria Jones" class="img-fluid">
+													</div>
+													<h3 class="font-weight-bold">Maria Jones</h3>
+													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;Fast shipping, amazing customer service, and top-notch products! Skin.Fit is my go-to for all my skincare essentials.&rdquo;</p>
+												</blockquote>
+
+												<div class="author-info">
+													<div class="author-pic">
+														<img src="images/person-1.png" alt="Maria Jones" class="img-fluid">
+													</div>
+													<h3 class="font-weight-bold">Jessica L., Lifestyle Influencer</h3>
+													<span class="position d-block mb-3">Student, United States.</span>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;I was skeptical at first, but Skin.Fit exceeded my expectations. My skin feels healthier, and I get compliments all the time. Highly recommend!.&rdquo;</p>
+												</blockquote>
+
+												<div class="author-info">
+													<div class="author-pic">
+														<img src="images/person-1.png" alt="Maria Jones" class="img-fluid">
+													</div>
+													<h3 class="font-weight-bold">Rachel T., Happy Customer</h3>
+													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Testimonial Slider -->
+
+		<!-- Start Blog Section -->
+		<div class="blog-section">
+			<div class="container">
+				<div class="row mb-5">
+					<div class="col-md-6">
+						<h2 class="section-title">Recent Blog</h2>
+					</div>
+					<div class="col-md-6 text-start text-md-end">
+						<a href="#" class="more">View All Posts</a>
+					</div>
+				</div>
+
+				<div class="row">
+
+					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+						<div class="post-entry">
+							<a href="#" class="post-thumbnail"><img src="images/womenWithProduct.jpg" alt="Image" class="img-fluid"></a>
+							<div class="post-content-entry">
+								<h3><a href="#">The Ultimate Skincare Routine for a Radiant Glow</a></h3>
+								<div class="meta">
+									<span>by <a href="#">Kristina Watson</a></span> <span>on <a href="#">Dec 19, 2021</a></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+						<div class="post-entry">
+							<a href="#" class="post-thumbnail"><img src="images/glowSkin.webp" alt="Image" class="img-fluid"></a>
+							<div class="post-content-entry">
+								<h3><a href="#">How To Keep Your Skin Clean</a></h3>
+								<div class="meta">
+									<span>by <a href="#">Robert Fox</a></span> <span>on <a href="#">Dec 15, 2021</a></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+						<div class="post-entry">
+							<a href="#" class="post-thumbnail"><img src="images/advertise.jpg" alt="Image" class="img-fluid"></a>
+							<div class="post-content-entry">
+								<h3><a href="#">Small Space Furniture Apartment Ideas</a></h3>
+								<div class="meta">
+									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 12, 2021</a></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<!-- End Blog Section -->	
+
+	
+
+	
+	<!-- footer Integration -->
+	<%- include('../partials/user/footer') %>
+
+
+	<script>
+
+      let user = <%- JSON.stringify(locals.user) %>;
+	
+		document.addEventListener("DOMContentLoaded", function () {
+
+			
+			if(!user){
+			let content = document.getElementById("mainDiv");
+			content.style.opacity = "0";
+			setTimeout(() => {
+				content.style.transition = "all 0.9s ease-in-out";
+                content.style.opacity = "1";
+			}, 900); 
+			isShown = true
+		}else
+			let content = document.getElementById("mainDiv");
+			content.style.opacity = "0";
+			setTimeout(() => {
+				content.style.transition = "all 0.5s ease-in-out";
+                content.style.opacity = "1";
+			}, 100); 
+
+		}
+		});
+	
+	</script>
+	

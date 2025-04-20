@@ -1,0 +1,705 @@
+<%- include("../../views/partials/admin/header") %>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* Content Header Styles */
+.content-header {
+    padding: 2rem 0;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+:root {
+      --primary-color: #1e90ff;
+      --secondary-color: #2d3436;
+      --success-color: #00b894;
+      --danger-color: #d63031;
+      --info-color: #0984e3;
+      --light-gray: #dfe6e9;
+      --background-color: #f5f6fa;
+      --white: #ffffff;
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s ease;
+    }
+
+.content-title {
+    font-size: 1.75rem;
+    color: #2c3e50;
+    margin: 0;
+    text-align: center;
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.table thead tr {
+    background-color: #46B0CD;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+}
+
+.table thead th {
+    padding: 12px 15px;
+    vertical-align: middle;
+    border: 1px solid #dddddd;
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.table tbody td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #dddddd;
+    vertical-align: middle;
+}
+
+/* Search Form Styles */
+.search-form {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.input-group {
+    display: flex;
+    justify-content: left;
+}
+
+.search-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    width: 70%;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #009879;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #007f67;
+}
+
+/* Button Styles */
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    margin: 2px;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.875rem;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Image Styles */
+.product-image {
+    border-radius: 4px;
+    object-fit: cover;
+    margin: 2px;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.page-item {
+    margin: 0 2px;
+}
+
+.page-link {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    color: #009879;
+    text-decoration: none;
+    background-color: white;
+}
+
+.page-item.active .page-link {
+    background-color: #009879;
+    color: white;
+    border-color: #009879;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    
+    .table th {
+      background: rgb(10, 206, 183);
+      color: var(--white);
+      font-weight: 500;
+      font-size: 15px;
+      padding: 1rem;
+    }
+    
+    .table thead,
+    .table tbody td {
+        min-width: 120px;
+    }
+    
+    .search-input {
+        width: 60%;
+    }
+}
+
+/* Action Icons */
+.bi-trash-fill {
+    color: #dc3545;
+    transition: color 0.2s;
+}
+
+.bi-trash-fill:hover {
+    color: #bb2d3b;
+}
+
+/* Text Colors */
+.text-white {
+    color: white !important;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+}
+    </style>
+</head>
+
+
+
+<div class="card-body  w-100">
+
+  
+    <h2 class="" style="color: #060606;">Product Management</h2>
+
+    <br>
+      
+    <div class="w-100" style="width: 100%;>
+
+        <form action="" method="get" class=""  style="width: 100%;"  >
+
+         <div class="d-flex flex-wrap align-items-center justify-content-between w-100 gap-3"  style="width: 100%;" >
+                  
+         
+            <div class="d-flex gap-3" style="width: 100%">
+
+                <div class="input-group w-50">
+
+                    <input id="search" type="text" class="form-control w-50" placeholder="Search" name="search" autocomplete="off" >
+
+                    
+                    <button type="button" id="clearSearch" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>               
+    
+
+
+                </div>
+               
+               
+             
+           
+                <select id="categorySelect" name="category" class="form-select w-50">
+                    <option value="">All Category</option>
+                    <% if (cat && cat.length > 0) { %>
+                        <% cat.forEach(category => { %>
+                            <option value="<%= category._id %>" <%= category._id == category ? "selected" : "" %> >
+                                <%= category.name %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option disabled>No categories available</option>
+                    <% } %>
+                </select>  
+                
+                
+                 <!-- For Sapcing -->
+                <div style="width: 100%;"></div>
+
+            </div>
+
+
+            <div class="d-flex flex-wrap align-items-center  w-100 gap-3 " style="width: 250px; "  >
+
+                <div class="form-check"  style="">
+                    <input class="form-check-input" type="radio" name="filter" id="all"  value="" checked>
+                    <label class="form-check-label" for="all">All</label>
+                </div>
+                <div class="form-check" width: 150px; >
+                    <input class="form-check-input" type="radio" name="filter"  value="deleted" id="deleted">
+                    <label class="form-check-label" for="deleted">Deleted</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter" value="blocked" id="blocked">
+                    <label class="form-check-label" for="blocked">Blocked</label>
+                </div>
+
+
+                <Button class="ms-auto" style="width: 150px; height: 50px; background-color: #009879; color: white;" onclick="window.location.href='/admin/addProduct'" >
+                    Product +
+                </Button>
+
+            </div>
+        
+
+
+            
+           </div>           
+        </form>
+
+        <br>
+
+
+        <h5>Listed: <%= data.length %></h5>
+        
+        <table class="table">
+            <thead >
+                <tr>
+                    <th>Product</th>
+                    <th>Stock</th>
+                    <th>Sale Price</th>
+                    <th>Regular Price</th>  
+                    <th>Offer</th>                
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i=data.length-1; i>=0; i--) { %>
+                
+
+                    <tr style="<%= data[i].isDeleted && data[i].isBlocked 
+                    ? 'border: 2px solid #E94336; background-color: #e8c9c9;'  /* Both Deleted & Blocked -> Red Background */
+                    : data[i].isDeleted 
+                    ? 'border: 2px solid #E94336;'  /* Only Deleted -> Red Border */
+                    : data[i].isBlocked 
+                    ? 'border: 2px solid #819830;'  /* Only Blocked -> Custom Yellow-Green Border */
+                    : '' %>">
+                
+
+                                        
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                    
+                            <!-- Photos Section (Left Side) -->
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center; width: 120px;">
+                                <% if(data[i].photos && data[i].photos.length > 0) { %>
+                                    <% data[i].photos.forEach((image, index) => { %>
+                                        <% if (index % 2 === 0) { %> <!-- Start a new row after every 2 images -->
+                                            <div style="width: 100%; display: flex; justify-content: center;">
+                                        <% } %>
+                    
+                                        <img src="/<%= image %>" alt="<%= data[i].name %>" class="product-image" style="width: 50px; height: 50px; margin: 5px;">
+                    
+                                        <% if (index % 2 === 1 || index === data[i].photos.length - 1) { %> 
+                                            </div> <!-- Close the row after 2 images -->
+                                        <% } %>
+                                    <% }); %>
+                                <% } else { %>
+                                    <img src="/placeholder.svg" alt="No image" class="product-image" style="width: 50px; height: 50px;">
+                                <% } %>
+                            </div>
+                    
+                            <!-- Name, Brand, Category Section (Right Side) -->
+                            <div style="margin-left: 15px; text-align: left;">
+                                <h4><%= data[i].name %></h4>
+                                <span>Category: <%= data[i].category ? data[i].category.name : 'N/A' %></span><br>
+                                <span>Brand: <%= data[i].brand %></span>
+                            </div>
+                    
+                        </div>
+                    </td>
+
+                    <td> <h6><%= data[i].stock %></h6></td>
+         
+                    <td><%= data[i].salePrice %></td>
+                    <td>
+                        <%= data[i].regularPrice %>
+                    </td>   
+                    
+                    <td>
+                        <% if (locals.data[i].category && locals.data[i].category.offer) { %>
+                          <%= data[i].category.offer %>%
+                        <% } else { %>
+                          0
+                        <% } %>
+                        
+                      </td>
+                      
+                    
+                    <td>                        
+                        <%if(data[i].isBlocked === false){%>
+                            Active
+                            <%} else{%>  Blocked    <%}%>    
+                            
+                            
+                            <%if(data[i].isDeleted === false){%>
+                                
+                                <%} else{%>  ,Deleted    <%}%>  
+                    </td>
+                    
+                    <td>
+
+                        <% if (!data[i].isDeleted) { %>
+                    <button id="deleteProduct" style="background-color: red;" class="btn btn-delete delete-product-btn"                       
+                        onclick="confirmDelete('<%=data[i]._id%>')"
+                        data-id="<%= data[i]._id %>"
+                        title="Delete Product"                        
+                        >
+                        <i class="fa-solid fa-trash" style="color: white;"></i>
+                     </button>
+
+                     <button id="editProduct" onclick="editProduct('<%=data[i]._id%>')"  title="Edit Product" style="background-color: rgb(67, 87, 223);" class="btn btn-delete edit-product-btn"  
+
+                     <a href="/admin/editProduct?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none; ">
+                        <i class="fa-solid fa-pen-to-square" style="color: white;"></i>
+                     </a> 
+                    </button>
+
+                    <%if(data[i].isBlocked === false){%>
+                        <button class="btn btn-danger"  title="Block Product">
+                            <a href="#" onclick="confirmBlockProduct('<%= data[i]._id %>'); return false;" class="text-white" style="text-decoration: none;">
+                                <i class="fa-solid fa-lock"></i>                
+                            </a>
+                        </button>
+                        <%} else{%>
+                        <button class="btn btn-success"   title="Unblock Product">
+                            <a href="#" onclick="confirmUnblockProduct('<%= data[i]._id %>'); return false;" class="text-white" style="text-decoration: none;">
+                                <i class="fa-solid fa-unlock-keyhole"></i>
+                            </a>
+                        </button>
+                        <%}%>
+
+                        <% } %>
+
+
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Button -->
+            <% if (currentPage > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                </li>
+            <% } else { %>
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            <% } %>
+    
+            <!-- Page Numbers -->
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+    
+            <!-- Next Button -->
+            <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                </li>
+            <% } else { %>
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+    
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+
+
+
+/// Attached Category IS Here
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    let searchInput = document.querySelector("input[name='search']");
+    let categorySelect = document.querySelector("select[name='category']");
+    let radioButtons = document.querySelectorAll("input[name='filter']");
+
+    let typingTimer;
+    const delay = 1000; // 1 second delay
+
+    // Retrieve last search
+    let lastSearch = localStorage.getItem("lastSearch") || ""; 
+    let lastCategory = localStorage.getItem("lastCategory") || "";
+    let lastFilter = localStorage.getItem("lastFilter") || "";
+
+    // Set search input value from localStorage
+    searchInput.value = lastSearch;
+
+    if (lastCategory) {
+        categorySelect.value = lastCategory;
+    }
+
+       // Set the selected radio button from localStorage
+       radioButtons.forEach(radio => {
+        if (radio.value === lastFilter) {
+            radio.checked = true;
+        }
+    });
+
+
+
+    function updateResults() {
+        let searchQuery = searchInput.value.trim();
+        let selectedCategory = categorySelect.value;
+        let selectedFilter = document.querySelector("input[name='filter']:checked").value;
+
+        
+        if (searchQuery !== lastSearch || selectedCategory !== lastCategory || selectedFilter !== lastFilter ) {
+           
+            lastSearch = searchQuery;
+            lastCategory = selectedCategory;
+            lastFilter = selectedFilter;
+
+            localStorage.setItem("lastSearch", lastSearch);
+            localStorage.setItem("lastCategory", lastCategory);
+            localStorage.setItem("lastFilter", lastFilter);
+            
+            let queryParams = new URLSearchParams();
+            if (searchQuery) queryParams.append("search", searchQuery);
+            if (selectedCategory) queryParams.append("category", selectedCategory);
+            if (selectedFilter) queryParams.append("filter", selectedFilter);
+            
+            window.location.href = `/admin/products?${queryParams.toString()}`;
+        }
+    }
+
+
+    categorySelect.addEventListener("change", updateResults);
+
+    searchInput.addEventListener("input", function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            let searchQuery = searchInput.value.trim();
+            if (searchQuery !== lastSearch) {
+                lastSearch = searchQuery;
+                localStorage.setItem("lastSearch", lastSearch); // Store in localStorage
+                window.location.href = `/admin/products?search=${encodeURIComponent(searchQuery)}`;
+            }
+        }, delay);
+    });
+
+    radioButtons.forEach(radio => {
+        radio.addEventListener("change", updateResults);
+    });
+
+    // Clear Search Button Functionality
+    document.getElementById("clearSearch").addEventListener("click", function () {
+        localStorage.removeItem("lastSearch"); // Remove stored search query
+        searchInput.value = ""; // Clear input field
+        document.querySelector("input[name='filter'][value='']").checked = true;
+        window.location.href = "/admin/products"; // Reset search
+    });
+});
+
+
+
+
+function confirmBlockProduct(productId) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, Block it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            fetch(`/admin/blockProduct?id=${productId}`, {
+                method: 'PATCH'
+            })
+            .then(response => response.json()) // Convert response to JSON
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Blocked!',
+                        text: data.message,
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = "/admin/products";
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Something went wrong!', 'error');
+            });
+        }
+    });
+}
+
+
+function confirmUnblockProduct(productId) {
+    event.preventDefault();
+
+    
+    Swal.fire({
+        title: "Are you sure?",
+        text: "",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, Unblock it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            fetch(`/admin/unblockProduct?id=${productId}`, {
+                method: 'PATCH'
+            })
+            .then(response => response.json()) // Convert response to JSON
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Unblocked!',
+                        text: data.message,
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = "/admin/products";
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Something went wrong!', 'error');
+            });
+        }
+    });
+}
+
+
+  function confirmDelete(productId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You will not be able to undo this action!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send a request to delete the product
+            fetch(`/admin/deleteProduct?id=${productId}`, {
+                method: 'PATCH'
+            })
+            .then(response => response.json()) // Convert response to JSON
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: data.message,
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = "/admin/products";
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Something went wrong!', 'error');
+            });
+        }
+    });
+}
+
+
+
+function editProduct(productId) {   
+    window.location.href = `/admin/editProduct?id=${productId}`;
+}
+
+
+</script>
+
+<%- include("../../views/partials/admin/footer") %>

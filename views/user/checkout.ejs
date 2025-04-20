@@ -1,0 +1,762 @@
+<%- include('../partials/user/header') %>
+
+    <style>
+        /* Enhanced Responsive Checkout Styles */
+        * {
+            color: #fff;
+            box-sizing: border-box;
+        }
+    
+        body {
+            /* background-color: #121212; */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    
+        .checkout-container {
+            padding: 1rem;
+            min-height: calc(100vh - 120px);
+        }
+    
+        .checkout-form {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }    
+   
+    
+        /* Form Sections
+        .form-section {
+            margin-bottom: 1.5rem;
+            background: #1e1e1e;
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        } */
+    
+        .form-title {
+            color: #050300;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(196, 162, 119, 0.3);
+        }
+    
+        /* Address Section */
+        .custom-select-wrapper {
+            margin-bottom: 1rem;
+        }
+    
+        /* .custom-select-wrapper select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2c2c2c;
+            border: 1px solid rgba(196, 162, 119, 0.3);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        } */
+    
+        .address-preview {
+            background: #3aa7d6;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            display: none;
+        }
+    
+        .address-preview.active {
+            display: block;
+        }
+    
+        /* Payment Methods */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+    
+        .payment-card {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid rgba(196, 162, 119, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            
+        }
+    
+        .payment-card.active {
+            border-color: #C4A277;
+            background: #3aa7d6
+        }
+    
+        /* Coupon Section */
+        .coupon-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+    
+        .coupon-section input {
+            width: 100%;
+            padding: 0.75rem;
+            /* background: #2c2c2c; */
+            border: 1px solid rgba(196, 162, 119, 0.3);
+            color: #fff;
+            border-radius: 6px;
+        }
+    
+        .coupon-section button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #C4A277;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    
+        /* Order Summary */
+        .order-summary {
+            background: #ffffff;
+           
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+    
+        .summary-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgb(0, 0, 0);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #000 ;
+        }
+    
+        .total {
+            font-weight: 600;
+            color: #C4A277;
+            font-size: 1.1rem;
+        }
+    
+        /* Buttons */
+        .btn-gold {
+            width: 100%;
+            padding: 1rem;
+            background: #C4A277;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+    
+        /* Modal Styles */
+        .modal-content {
+            background: #2c2c2c;
+            color: #fff;
+        }
+    
+        .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+    
+        .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    
+        /* Table Styles */
+        #couponTable {
+            width: 100%;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+    
+        #couponTable th {
+            background: #1e1e1e;
+            color: #C4A277;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+    
+        #couponTable td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            word-break: break-word;
+        }
+    
+        /* Responsive Adjustments */
+        @media (min-width: 576px) {
+            .coupon-section {
+                flex-direction: row;
+            }
+            
+            .coupon-section input {
+                flex: 1;
+            }
+            
+            .coupon-section button {
+                width: auto;
+            }
+            
+            .payment-methods {
+                flex-direction: row;
+            }
+            
+            .payment-card {
+                flex: 1;
+            }
+        }
+    
+        @media (min-width: 768px) {
+            .checkout-container {
+                padding: 2rem;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
+            }
+            
+            .form-title {
+                font-size: 1.3rem;
+            }
+            
+            .summary-item {
+                font-size: 1rem;
+            }
+        }
+    
+        @media (max-width: 767px) {
+            #couponTable thead {
+                display: none;
+            }
+            
+            #couponTable tr {
+                display: block;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid rgba(196, 162, 119, 0.3);
+            }
+            
+            #couponTable td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            
+            #couponTable td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: #C4A277;
+                margin-right: 1rem;
+                flex: 1;
+            }
+            
+            #couponTable td:last-child {
+                border-bottom: none;
+            }
+            
+            .modal-footer button {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+        }
+    </style>
+
+
+
+    <!-- Checkout Form -->
+
+<div class="checkout-container">
+   
+    <form class="checkout-form" method="post" action="/addOrder" id="checkoutForm">
+        <!-- Shipping Address Section -->
+        <div class="form-section">
+            <h3 class="form-title">Select Address</h3>
+            <div class="custom-select-wrapper">
+                <select name="address" id="address" class="form-control" required>
+                    <option value="" disabled selected style="color: #000;">Choose Delivery Address</option>
+                    <% add.forEach(address=> { %>
+                        <option value="<%= address._id %>" style="color: #000;"
+                            data-full-address="<%= `${address.landMark}, ${address.city}, ${address.state} - ${address.pincode}` %>">
+                            📌 <%= address.name %> - <%= address.city %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="address-preview" id="addressPreview"></div>
+            <a href="/addAddress" style="color: #3aa7d6; display: inline-block; margin-top: 0.5rem;">Add Address</a>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="form-section">
+            <h3 class="form-title">Payment Method</h3>
+            <div class="payment-methods">
+             
+
+                <div class="payment-card" data-method="cod">
+                    <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                        <input type="radio" name="paymentMethod" value="cod" style="cursor: pointer;"  checked>
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span style="color: black;">Cash On Delivery</span>
+                    </label>
+                </div>
+        
+
+                <!-- <div class="payment-card" data-method="razorpay">
+                    <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                        <input type="radio" name="paymentMethod" value="razorpay" style="cursor: pointer;">
+                        <i class="fas fa-wallet"></i>
+                        <span style="color: black;">Razorpay</span>
+                    </label>
+                </div> -->
+
+            </div>
+        </div>
+
+        <!-- Coupon Code Section -->
+        <div class="form-section">
+            <h3 class="form-title">Apply Coupon</h3>
+            <div class="coupon-section">
+                <input type="text" id="couponCode" name="couponCode" placeholder="Enter Coupon Code">
+                <button type="button" id="applyCoupon"  style="background-color: #3aa7d6;" >Apply</button>
+                <button type="button" id="cancelCoupon" style="display: none;">Cancel Coupon</button>
+            </div>
+            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" 
+                    style="background: #ADD6FF; border: none; color: #000; padding: 0.75rem; border-radius: 6px; margin-top: 0.5rem; width: 100%;">
+                View Available Coupons
+            </button> -->
+            <p class="discount-info" id="discountInfo" style="display: none;"></p>
+            <p class="error-message" id="errorMessage" style="display: none;"></p>
+        </div>
+
+        <!-- Order Summary Section -->
+        <div class="form-section">
+
+            <h3 class="form-title">Order Summary</h3>
+            <div class="order-summary">
+                <% cartItems.forEach(item=> { %>
+                    <div class="summary-item" ">
+                        <span class="product-name" style="color: #000;" >
+                            <%= item.productId.name %> × <%= item.qty %>
+                        </span>
+                        <span class="product-price">
+
+                            ₹<span class="original-price" data-price="<%= item.totalPrice %>" style="color: #000;">
+                                <%=   parseFloat(item.totalPrice).toFixed(2) %>
+                            </span>
+                            
+                            <span class="discounted-price" style="display: none;"></span>
+                        </span>
+                    </div>
+                <% }) %>
+
+                <div class="summary-item">
+                    <span style="color: #000;">Subtotal:</span>
+                    <span>₹<span id="subtotal" name="subTotal" style="color: #000;">
+                            <%= subTotal %>.00
+                        </span></span>
+                </div>
+
+                <div class="summary-item">
+                    <span style="color: #000;">Delivery Charge:</span>
+                    <span>₹<span id="shipping" name="shipping" style="color: #000;">
+                            <%= deliveryCharge %>.00
+                        </span></span>
+                </div>
+
+                <div class="summary-item">
+                    <span style="color: #000;">Discount:</span>
+                    <span>-₹<span id="discount" name="discount" style="color: #000;">
+                            0.00
+                        </span></span>
+                </div>
+
+     
+                <div class="summary-item total">
+                    <span style="color: #000;">Total Amount:</span>
+                    <span>₹<span id="total" name="shipping" style="color: #000;">
+                            <%= totalAmount %>.00
+                        </span></span>
+                    <input type="hidden" id="totalAmountInput" name="totalAmount" value="<%= totalAmount %>">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <button type="submit" class="btn-gold" style="background-color: #3aa7d6;" >
+            <i class="fas fa-lock" ></i>
+            Confirm Order
+        </button>
+    </form>
+
+    <!-- Coupon Modal -->
+    <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <% if (coupons.length> 0) { %>
+                        <div class="table-responsive">
+                            <table id="couponTable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Coupon Code</th>
+                                        <th>Discount</th>
+                                        <th>Min Purchase</th>
+                                        <th>Expires</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% coupons.forEach(coupon=> { %>
+                                        <tr>
+                                            <td data-label="Code"><%= coupon.name %></td>
+                                            <td data-label="Discount"><%= coupon.offerPrice %> Off</td>
+                                            <td data-label="Min Purchase">₹<%= coupon.minPrice.toFixed(2) %></td>
+                                            <td data-label="Expires"><%= new Date(coupon.expireOn).toLocaleDateString() %></td>
+                                            <td data-label="Action">
+                                                <button class="btn btn-sm" 
+                                                        style="background: #C4A277; color: #000; border: none;"
+                                                        onclick="copyCoupon('<%= coupon.name %>')">
+                                                    Copy
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="alert alert-warning text-center">No available coupons at the moment.</div>
+                    <% } %>
+                </div>
+                <div class="modal-footer">
+                    <button id="prevPage" class="btn btn-secondary">Previous</button>
+                    <span id="pageInfo" class="mx-2">Page 1 of <%= Math.ceil(coupons.length/5) %></span>
+                    <button id="nextPage" class="btn btn-secondary">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    
+    <script>
+        const addressSelect = document.getElementById('address');
+        const addressPreview = document.getElementById('addressPreview');
+
+        addressSelect.addEventListener('change', function () {
+            if (this.value) {
+                const selectedOption = this.options[this.selectedIndex];
+                addressPreview.innerHTML = `
+                <h4>${selectedOption.text.replace('📌 ', '')}</h4>
+                <p>${selectedOption.dataset.fullAddress}</p>
+            `;
+                addressPreview.classList.add('active');
+            } else {
+                addressPreview.classList.remove('active');
+            }
+        });
+
+        function copyCoupon(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                Swal.fire({
+                    title: 'Copied successfully',
+                    text: 'Coupon code coppied succusfully',
+                    icon: 'success'
+                })
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        }
+
+        document.querySelectorAll('.payment-card').forEach(card => {
+            card.addEventListener('click', function () {
+                document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        const couponsPerPage = 5;
+        let currentPage = 1;
+        const couponRows = document.querySelectorAll('#couponTable tbody tr');
+        const totalPages = Math.ceil(couponRows.length / couponsPerPage);
+
+        function displayCoupons() {
+            const start = (currentPage - 1) * couponsPerPage;
+            const end = start + couponsPerPage;
+            couponRows.forEach((row, index) => {
+                row.style.display = (index >= start && index < end) ? '' : 'none';
+            });
+            updatePaginationControls();
+        }
+
+        function updatePaginationControls() {
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
+
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        }
+
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayCoupons();
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayCoupons();
+            }
+        });
+
+        document.getElementById('couponModal').addEventListener('show.bs.modal', () => {
+            currentPage = 1;
+            displayCoupons();
+        });
+
+        if (couponRows.length > 0) {
+            displayCoupons();
+        }
+
+        document.getElementById("applyCoupon").addEventListener("click", async () => {
+            const couponCode = document.getElementById("couponCode").value.trim();
+            const errorMessage = document.getElementById("errorMessage");
+            const discountInfo = document.getElementById("discountInfo");
+            const totalElement = document.getElementById("total");
+            const discount = document.getElementById("discount")
+            const totalAmountInput = document.getElementById("totalAmountInput");
+
+            errorMessage.style.display = "none";
+            discountInfo.style.display = "none";
+
+            if (!couponCode) {
+                errorMessage.textContent = "Please enter a coupon code.";
+                errorMessage.style.display = "block";
+                return;
+            }
+
+            try {
+                const response = await fetch("/applyCoupon", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        couponCode,
+                        totalAmount: parseFloat(totalElement.textContent),
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    discountInfo.innerText = `✅ Coupon Applied! ${data.discountAmount}`;
+                    discountInfo.style.display = "block";
+                    discount.innerText = `${data.discountAmount}`;
+                    totalElement.innerHTML = data.newTotal;
+                    totalAmountInput.value = data.newTotal;
+                    document.getElementById("cancelCoupon").style.display = "inline-block";
+
+                    totalElement.innerHTML = data.newTotal;
+                    totalAmountInput.value = data.newTotal;
+
+                    document.querySelectorAll(".summary-item").forEach((item) => {
+                        const productNameEl = item.querySelector(".product-name");
+                        const productPriceEl = item.querySelector(".original-price");
+                        const discountedPriceEl = item.querySelector(".discounted-price");
+
+                        const productName = productNameEl.textContent.split(" × ")[0].trim();
+                        const discountDetail = data.discountDetails.find((detail) =>
+                            productName.includes(detail.productId.toString())
+                        );
+
+                        if (discountDetail) {
+                            productPriceEl.style.textDecoration = "line-through";
+                            productPriceEl.style.color = "#888";
+                            discountedPriceEl.textContent = `₹${discountDetail.discountedPrice.toFixed(2)}`;
+                            discountedPriceEl.style.display = "inline";
+                            discountedPriceEl.style.color = "var(--accent-gold)";
+                        }
+                    });
+                } else {
+                    errorMessage.textContent = data.message;
+                    errorMessage.style.display = "block";
+                    discountInfo.style.display = "none";
+                }
+            } catch (error) {
+                console.log(error)
+                errorMessage.innerHTML = `✅ Coupon Applied! Discount: ₹${data.discountAmount} <br> <strong>New Total: ₹${data.newTotal}</strong>`;
+                errorMessage.style.display = "block";
+                discountInfo.style.display = "none";
+            }
+        });
+
+        document.getElementById("cancelCoupon").addEventListener("click", () => {
+            document.getElementById("discountInfo").style.display = "none";
+            document.getElementById("errorMessage").style.display = "none";
+            document.getElementById("discount").innerText = "0.00";
+
+            document.getElementById("subtotal").innerText = originalSubtotal.toFixed(2);
+            document.getElementById("shipping").innerText = originalShipping.toFixed(2);
+            document.getElementById("total").innerText = originalTotal.toFixed(2);
+            document.getElementById("totalAmountInput").value = originalTotal;
+
+            document.querySelectorAll(".summary-item").forEach((item) => {
+                const productPriceEl = item.querySelector(".original-price");
+                const discountedPriceEl = item.querySelector(".discounted-price");
+                productPriceEl.style.textDecoration = "none";
+                productPriceEl.style.color = "inherit";
+                discountedPriceEl.style.display = "none";
+            });
+
+            document.getElementById("cancelCoupon").style.display = "none";
+
+            let couponInput = document.getElementById("couponCode");
+            couponInput.value = ""; 
+            couponInput.setAttribute("value", "");
+            couponInput.dispatchEvent(new Event("change")); 
+            couponInput.blur();
+
+            console.log("Coupon canceled, input fully cleared!");
+        });
+
+
+        // SUBMIT
+
+        document.getElementById("checkoutForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            const addressId = document.getElementById("address").value;
+            const totalAmount = parseFloat(document.getElementById("totalAmountInput").value);
+            const couponCode = document.getElementById("couponCode").value.trim();
+
+            const existingCouponInputs = this.querySelectorAll('input[name="couponCode"]');
+            const existingAddressInputs = this.querySelectorAll('input[name="address"]');
+            existingCouponInputs.forEach((input) => input.remove());
+            existingAddressInputs.forEach((input) => input.remove());
+
+
+
+            if (selectedPaymentMethod === "razorpay") {
+                try {
+                    const resOrder = await fetch("/api/razorpay/createRazorpayOrder", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ totalAmount }),
+                    });
+
+                    const data = await resOrder.json();
+
+                    if (data.success) {
+                        const orderData = data.order;
+                        const options = {
+                            key: "rzp_test_KrLYrR8hOSocAl",
+                            amount: orderData.amount,
+                            currency: orderData.currency,
+                            name: "MAGIC10",
+                            description: "Order Payment",
+                            order_id: orderData.id,
+                            handler: function (response) {
+                                const form = document.getElementById("checkoutForm");
+
+                                const paymentIdInput = document.createElement("input");
+                                paymentIdInput.type = "hidden";
+                                paymentIdInput.name = "razorpay_payment_id";
+                                paymentIdInput.value = response.razorpay_payment_id;
+                                form.appendChild(paymentIdInput);
+
+                                const orderIdInput = document.createElement("input");
+                                orderIdInput.type = "hidden";
+                                orderIdInput.name = "razorpay_order_id";
+                                orderIdInput.value = response.razorpay_order_id;
+                                form.appendChild(orderIdInput);
+
+                                const signatureInput = document.createElement("input");
+                                signatureInput.type = "hidden";
+                                signatureInput.name = "razorpay_signature";
+                                signatureInput.value = response.razorpay_signature;
+                                form.appendChild(signatureInput);
+
+                                const couponInput = document.createElement("input");
+                                couponInput.type = "hidden";
+                                couponInput.name = "couponCode";
+                                couponInput.value = couponCode;
+                                form.appendChild(couponInput);
+
+                                const addressInput = document.createElement("input");
+                                addressInput.type = "hidden";
+                                addressInput.name = "address";
+                                addressInput.value = addressId;
+                                form.appendChild(addressInput);
+
+                                form.submit();
+                            },
+                            prefill: {
+                                name: "<%= user.username %>",
+                                email: "<%= user.email %>",
+                                contact: "<%= user.phone %>",
+                            },
+                            theme: { color: "#C4A277" },
+                        };
+                        const rzp = new Razorpay(options);
+                        rzp.on('payment.failed', function (response) {
+                            window.location.href = `/orderFailure?orderId=${orderData.id}&error=${response.error.description}`;
+                        })
+                        rzp.open();
+                    } else {
+                        Swal.fire("Error!", data.message || "Unable to create order", "error");
+                        btn.innerHTML = "Confirm Order";
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Error creating Razorpay order:", error);
+                    Swal.fire("Error!", "Something went wrong.", "error");
+                    btn.innerHTML = "Confirm Order";
+                    btn.disabled = false;
+                }
+            } else {
+                const couponInput = document.createElement("input");
+                couponInput.type = "hidden";
+                couponInput.name = "couponCode";
+                couponInput.value = couponCode;
+                this.appendChild(couponInput);
+
+                const addressInput = document.createElement("input");
+                addressInput.type = "hidden";
+                addressInput.name = "address";
+                addressInput.value = addressId;
+                this.appendChild(addressInput);
+
+                this.submit();
+            }
+        });
+
+
+
+
+        // document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        // document.querySelector('.navbar').classList.toggle('active');}
+        // );
+    </script>
+
+    <%- include('../partials/user/footer') %>

@@ -1,0 +1,688 @@
+<%- include("../../views/partials/admin/header") %>
+
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-color: #1e90ff;
+      --secondary-color: #46b0cd;
+      --success-color: #00b894;
+      --danger-color: #d63031;
+      --info-color: #0984e3;
+      --light-gray: #dfe6e9;
+      --background-color: #f5f6fa;
+      --white: #ffffff;
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: #2d3436;
+      line-height: 1.6;
+    }
+
+    .content-main {
+      padding: 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .content-header h2 {
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    .card {
+      border: none;
+      box-shadow: var(--shadow);
+      border-radius: 12px;
+      background-color: var(--white);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: var(--white);
+      border-radius: 12px 12px 0 0;
+      padding: 1rem 1.5rem;
+      font-weight: 500;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .form-control {
+      border-radius: 25px;
+      border: 1px solid var(--light-gray);
+      padding: 0.75rem 1.25rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+    }
+
+    .input-group {
+      gap: 0.75rem;
+    }
+
+    .btn {
+      border-radius: 25px;
+      padding: 0.4rem 1.25rem; /* Reduced padding from 0.6rem 1.75rem */
+      font-size: 0.9rem; /* Reduced font size slightly */
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: var(--transition);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      border-color: var(--danger-color);
+    }
+
+    .btn-info {
+      background-color: var(--info-color);
+      border-color: var(--info-color);
+      font-size: 10px
+    }
+    .btn-delete {
+      background-color: red;
+      border-color: red;
+      font-size: 10px
+    }
+
+    .btn-sm {
+      padding: 0.25rem 0.75rem; /* Reduced padding from 0.4rem 1rem */
+      font-size: 0.8rem; /* Reduced font size for small buttons */
+    }
+
+    .table {
+      background-color: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .table th {
+      background: var(--secondary-color);
+      color: var(--white);
+      font-weight: 500;
+      font-size: 15px;
+      padding: 1rem;
+    }
+
+    .table td {
+      padding: 1rem;
+      vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: rgba(30, 144, 255, 0.05);
+      transition: var(--transition);
+    }
+
+    .badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 500;
+      color: #060606;
+    }
+
+    .pagination {
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .pagination .page-link {
+      color: var(--secondary-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 5px;
+      border: 1px solid var(--light-gray);
+      transition: var(--transition);
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--white);
+    }
+
+    .pagination .page-link:hover {
+      background-color: var(--primary-color);
+      color: var(--white);
+      border-color: var(--primary-color);
+    }
+
+    .error-message {
+      color: var(--danger-color);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .content-main {
+        padding: 1.5rem;
+      }
+      .input-group {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+    .btn-custom {
+        font-size: 8px; /* Decrease font size */
+        padding: 6px 12px; /* Adjust padding */
+        margin: 5px; /* Add space between buttons */
+    }
+
+  </style>
+</head>
+
+<body>
+  <section class="card-body">
+ 
+    <div class="content-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="content-title" style="color: #060606;">Category Management</h2>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+
+        
+        <form action="/admin/category/" method="get" class="mb-0" id="searchForm">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search categories" name="search" value="<%= searchQuery || '' %>"/>
+            <button 
+            class="btn btn-secondary" type="button" id="clearSearch">
+              <i class="fa-solid fa-trash"></i>
+              </button>
+            <button class="btn btn-primary" type="button" id="addCategoryBtn">Category+</button>           
+          </div>
+      </div>
+    </div>
+
+   
+  <div class="col-lg-12">
+     <div class="card mb-4">
+      
+      
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group" role="group" aria-label="Category Filter">
+                <input type="radio" class="btn-check filter-radio" name="categoryFilter" id="filterAll" value="all" checked>
+                <label class="btn btn-outline-primary" for="filterAll">All</label>
+    
+                <input type="radio" class="btn-check filter-radio" name="categoryFilter" id="filterActive" value="active">
+                <label class="btn btn-outline-success" for="filterActive">Active</label>
+    
+                <input type="radio" class="btn-check filter-radio" name="categoryFilter" id="filterDeleted" value="deleted">
+                <label class="btn btn-outline-danger" for="filterDeleted">Deleted</label>
+            </div>
+    
+            <!-- Move "Listed: X" to the right -->
+            <h5 class="mb-0">Listed: <%= cat.length %></h5>
+        </div>
+    </div>
+    
+
+
+         <table class="table table-hover table-bordered text-center">
+        <thead class="table-">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Offer</th>
+                <th>Status</th>                
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% cat.forEach((category, index) => { %>
+          
+              <tr style="<%= !category.status ? 'border: 2px solid #E94336;' : '' %>" 
+                class="<%= category.status ? (index % 2 === 0 ? 'bg-light' : 'bg-white') : '' %>">
+               <td class="align-middle">
+                  <%= category.name.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") %>
+                </td>
+                <td class="align-middle">
+                  <%= category.description.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") %>
+                </td>
+                <td class="align-middle">
+                  <%= category.offer ? category.offer : '0'%> %
+                </td>
+                <td class="align-middle">
+                  <%= category.status ? "Active" : "Inactive" %>
+                </td>
+                <td class="align-middle gap-3">
+
+                 
+                  
+                  <% if (category.status) { %>
+                  <button class="btn btn-info edit-category-btn"
+                    data-id="<%= category._id %>"
+                    data-description="<%= category.description %>"
+                    data-offer="<%= category.offer %>"
+                    data-name="<%= category.name.replace(/"/g, '&quot;') %>">
+          
+                    <i class="fa-solid fa-pen-to-square" style="color: white;"></i>
+                  </button>
+
+                  <div>.</div>
+
+                
+                    <button id="deleteCategory" class="btn btn-delete delete-category-btn"
+                            data-id="<%= category._id %>">
+                        <i class="fa-solid fa-trash" style="color: white;"></i>
+                    </button>
+                <% } %>
+                  
+
+                </td>
+              </tr>
+              
+
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+
+
+        <nav aria-label="Page navigation">
+          <ul class="pagination">      
+            <div class="pagination-container">
+              <% if (currentPage > 1) { %>
+                  <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+              <% } %>
+              <% for (let i = 1; i <= totalPages; i++) { %>
+                  <% if (i === currentPage) { %>
+                      <span class="current-page"><%= i %></span>
+                  <% } else { %>
+                      <a href="?page=<%= i %>"><%= i %></a>
+                  <% } %>
+              <% } %>
+              <% if (currentPage < totalPages) { %>
+                  <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+              <% } %>
+          </div>
+          
+
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script>
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let searchInput = document.querySelector("input[name='search']");
+    let filterRadios = document.querySelectorAll(".filter-radio");
+    let typingTimer;
+    const delay = 1000; // 1 second delay
+
+    // Get URL Parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    let lastSearch = urlParams.get("search") ? urlParams.get("search").trim() : ""; // Get existing search query
+    let selectedFilter = urlParams.get("filter") || "all"; // Default to "all" if no filter is found
+
+    // Set input value (for remembering search after reload)
+    searchInput.value = lastSearch;
+
+    // Set checked radio button (for remembering filter after reload)
+    filterRadios.forEach((radio) => {
+        if (radio.value === selectedFilter) {
+            radio.checked = true;
+        }
+    });
+
+    function updateURL() {
+        let searchQuery = searchInput.value.trim();
+        let selectedFilter = document.querySelector(".filter-radio:checked").value;
+
+        let urlParams = new URLSearchParams(window.location.search);
+        urlParams.set("search", searchQuery);
+        urlParams.set("filter", selectedFilter);
+
+        window.location.href = `/admin/categories?${urlParams.toString()}`;
+    }
+
+    // Search Input Event
+    searchInput.addEventListener("input", function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            let searchQuery = searchInput.value.trim();
+            if (searchQuery !== lastSearch) { 
+                lastSearch = searchQuery;
+                updateURL();
+            }
+        }, delay);
+    });
+
+    // Filter Radio Button Event
+    filterRadios.forEach((radio) => {
+        radio.addEventListener("change", updateURL);
+    });
+
+    // Clear Search Button Functionality
+    document.getElementById("clearSearch").addEventListener("click", function () {
+        window.location.href = "/admin/categories"; // Reset search & filter
+    });
+
+});
+
+
+
+/// ADD CATEGORY 
+document.getElementById("addCategoryBtn").addEventListener("click", function () {
+    Swal.fire({
+      title: "Add New Category",
+      html: 
+      `
+      <div id="nameError" class="error"></div>
+      <input type="text" id="addName" class="swal2-input" placeholder="Category Name" autocomplete="off">
+
+      <div id="descriptionError" class="error"></div>
+      <textarea id="addDescription" class="swal2-textarea" placeholder="Category Description"></textarea>
+
+      <div id="offerError" class="error"></div>
+      <input type="number" id="addOffer" class="swal2-input" placeholder="Offer %">
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Create",
+      cancelButtonText: "Cancel",
+
+      preConfirm: () => {
+        const nameInput = document.getElementById("addName");
+        const descriptionInput = document.getElementById("addDescription");
+        const offerInput = document.getElementById("addOffer");
+
+        const nameError = document.getElementById("nameError");
+        const descriptionError = document.getElementById("descriptionError");
+        const offerError = document.getElementById("offerError");
+        
+        const name = nameInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const offer = offerInput.value.trim();
+
+        let isValid = true;
+
+        // Clear previous error messages
+        nameError.textContent = "";
+        descriptionError.textContent = "";
+        offerError.textContent = ""
+
+        if (!name) {
+            nameError.textContent = "Name is required";
+            nameError.style.color = "red";
+            isValid = false;
+        }
+        if (!description) {
+            descriptionError.textContent = "Description is required";
+            descriptionError.style.color = "red";
+            isValid = false;
+        }
+
+        if(offer !== undefined && ( offer < 0 || offer > 100) ){
+          
+            offerError.textContent = "Offer value must be between 0 and 100";
+            offerError.style.color = "red";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return false; // Prevent closing Swal
+        }
+
+        return { name, description, offer };
+      }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/admin/addCategory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(result.value)
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (body.success) {
+                    Swal.fire("Success!", "Category added successfully!", "success").then(() => location.reload());
+                } else if (status === 400 && body.status === "duplicate") {
+                    Swal.fire("Error!", body.error, "error");
+                } else if (status === 400 && body.status === "nameError") {
+                    Swal.fire("Error!", body.error, "error");
+                } else if (status === 400 && body.status === "offerError") {
+                    Swal.fire("Error!", body.error, "error");
+                } else {
+                    Swal.fire("Error!", "An unknown error occurred.", "error");
+                }
+            })
+            .catch(error => {               
+              Swal.fire({
+                title: "Error!",
+                text: "Something went wrong. Please try again.",
+                icon: "error",
+                showCancelButton: true,
+                confirmButtonText: "Retry",
+                cancelButtonText: "Cancel"
+            }).then((retry) => {
+                if (retry.isConfirmed) {
+                    document.getElementById("addCategoryBtn").click(); // Reopen the popup
+                }
+            });
+            });
+        }
+    });
+});
+
+
+  
+  // EDIT CATEGORY FUNCTION
+  document.querySelectorAll(".edit-category-btn").forEach(button => {
+    button.addEventListener("click", function (event) {
+
+      event.preventDefault();
+
+      const categoryId = this.getAttribute("data-id");
+      const categoryName = this.getAttribute("data-name");
+      const categoryDescription = this.getAttribute("data-description");
+      const categoryOffer = this.getAttribute("data-offer")
+
+      Swal.fire({
+        title: "Edit Category",
+        html: `
+
+          <div id="nameError2" class="error"></div>
+          <input type="text" id="editName" class="swal2-input" placeholder="Category Name" value="${categoryName}">
+          
+          <div id="descriptionError2" class="error"></div>
+          <textarea id="editDescription" class="swal2-textarea" placeholder="Category Description">${categoryDescription}</textarea>
+          
+          <div id="offerError2" class="error"></div>
+          <input type="number" id="editOffer" class="swal2-input" placeholder="Offer" value="${categoryOffer}">        `,
+      
+        showCancelButton: true,
+        confirmButtonText: "Update",
+        cancelButtonText: "Cancel",
+        preConfirm: () => {
+
+       
+          let isValid = true;
+
+          // Clear previous error messages
+          nameError2.textContent = "";
+          descriptionError2.textContent = "";
+          offerError2.textContent = "";
+
+          const nameInput = document.getElementById("editName");
+          const descriptionInput = document.getElementById("editDescription");
+          const offerInput = document.getElementById("editOffer");
+
+          const name = nameInput.value.trim();
+          const description = descriptionInput.value.trim();
+          const offer = offerInput.value.trim();
+
+
+          if (!name) {           
+            nameError2.textContent = "Name is required";
+            nameError2.style.color = "red";
+            isValid = false;
+          }
+          if (!description) {
+            descriptionError2.textContent = "Description is required";
+            descriptionError2.style.color = "red";
+            isValid = false;
+          }
+          if(offer !== undefined && ( offer < 0 || offer > 100) ){
+          
+            offerError2.textContent = "Offer value must be between 0 and 100";
+            offerError2.style.color = "red";
+            isValid = false;
+          }
+
+          if (!isValid) {
+            return false; // Prevent closing Swal
+          }
+          return { name, description, offer };
+        }
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/admin/editCategory/${categoryId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(result.value)
+          })
+          .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (body.success) {
+                    Swal.fire("Success!", "Category Updated successfully!", "success").then(() => location.reload());
+                } else if (status === 400 && body.status === "duplicate") {
+                    Swal.fire("Error!", body.error, "error");
+                } else if (status === 400 && body.status === "nameError") {
+                    Swal.fire("Error!", body.error, "error");
+                } else if (status === 400 && body.status === "offerError") {
+                    Swal.fire("Error!", body.error, "error");
+                } else {
+                    Swal.fire("Error!", "An unknown error occurred.", "error");
+                }
+            })
+            .catch(error => {               
+              Swal.fire({
+                title: "Error!",
+                text: "Something went wrong. Please try again.",
+                icon: "error",
+                showCancelButton: true,
+                confirmButtonText: "Retry",
+                cancelButtonText: "Cancel"
+            }).then((retry) => {
+                if (retry.isConfirmed) {
+                    document.getElementById(".edit-category-btn").click(); // Reopen the popup
+                }
+            });
+            });
+        }
+      });      
+    });
+  });
+
+
+
+  //DELETE
+ 
+  document.querySelectorAll(".delete-category-btn").forEach((button) => {
+    button.addEventListener("click", function (event) {
+
+      event.preventDefault();
+
+      const categoryId = this.getAttribute("data-id");
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This category will be deleted.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, Delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/admin/deleteCategory/${categoryId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: false }), // Send updated status
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                Swal.fire("Updated!", "Category deleted.", "success");
+                location.reload();
+              } else {
+                Swal.fire("Error!", "Failed to update category.", "error");
+              }
+            })
+            .catch((error) => {
+             
+              Swal.fire("Error!", "Something went wrong.", "error");
+            });
+        }
+      });
+    });
+  });
+ 
+
+
+
+
+  </script>
+</body>
+
+<%- include("../../views/partials/admin/footer") %>

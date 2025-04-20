@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin.fit Login</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <style>
+        body {
+            /* background: linear-gradient(135deg, #f5e8e8 0%, #d4e8f2 100%); */
+            background-color: #00AFC8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        .login-container {
+            display: flex;
+            width: 80%;
+            max-width: 900px;
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .login-container:hover {
+            transform: scale(1.02);
+        }
+        .login-form {
+            padding: 50px;
+            flex: 1;
+            background: #fff;
+        }
+        .login-image {
+            flex: 1;
+            background: linear-gradient(135deg, #a8d5e2 0%, #b3e1e8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .login-image h1 {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #1a3c50;
+            font-size: 2.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        .product-image {
+            max-width: 90%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+        .btn-custom {
+            background: linear-gradient(90deg, #1a3c50 0%, #2a5c74 100%);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 0;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #2a5c74 0%, #1a3c50 100%);
+        }
+        .btn-google {
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 10px 0;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .btn-google:hover {
+            background-color: #f8f9fa;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #1a3c50;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #a8d5e2;
+            box-shadow: 0 0 5px rgba(168, 213, 226, 0.5);
+        }
+        .text-muted a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .text-muted a:hover {
+            text-decoration: underline;
+            color: #1a3c50;
+        }
+        .referral-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .referral-section p {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .referral-section .form-control {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        h2 {
+            font-weight: 600;
+            color: #1a3c50;
+            letter-spacing: 1px;
+        }
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h2 class="mb-3">Welcome back!</h2>
+            <p class="mb-4">Enter your credentials to access your account</p>
+            <form  id="loginform" >
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <div id="errorEmail" class="error-message"></div>
+                    <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div id="errorPassword" class="error-message"></div>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                    <!-- <a href="#" class="text-muted mt-2 d-block">Forgot password?</a> -->
+                </div>
+
+                
+                <% if(locals.message && message.length > 0){ %>
+                    <div class="alert alert-danger text-center">
+                        <%= message %>
+                    </div>
+                <% } %>
+
+
+                <div id="errorResult" class="error-message"></div>
+                <button type="submit" class="btn btn-custom w-100 mb-3">Login</button>
+                <!-- <button type="button" class="btn btn-google w-100 mb-3" onclick="">
+                    <img src="https://www.google.com/s2/favicons?domain=google.com" alt="Google" style="width: 16px; margin-right: 8px;"> Sign in with Google
+                    
+
+                    <a class="btn btn-outline-dark w-100"  href="/auth/google">
+                        <img src="https://www.google.com/s2/favicons?domain=google.com"  width="80" height="100%" class="me-4"> Sign in with Google
+                    </a>
+
+                </button>    -->
+
+                <button type="button" class="btn btn-google w-100 mb-3" onclick="location.href='/auth/google'">
+                    <img src="https://www.google.com/s2/favicons?domain=google.com" alt="Google" style="width: 16px; margin-right: 8px;">
+                    Sign in with Google
+                </button>
+
+                <div class="mb-3 text-end">
+                    <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+                </div>
+            
+                <p class="text-center text-muted mt-4">Don't have an account? <a href="/signup">Sign Up</a></p>
+
+            </form>
+        </div>
+        <div class="login-image">          
+            <div class="col-md-6 d-none d-md-block bg-light d-flex align-items-center justify-content-center">
+                <img src="2.png" alt="Skin.fit" class="img-fluid rounded">
+            </div>
+
+        </div>
+    </div>   
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+   
+
+
+
+<script>
+    document.getElementById("loginform").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        if(validate()) {
+
+            loginUser()
+        }
+    });
+
+
+    function validate(){
+
+     let isValid = true;  
+
+    let email = document.getElementById("email").value;
+    let errorEmail = document.getElementById("errorEmail");
+
+    let password = document.getElementById("password").value;
+    let errorPassword = document.getElementById("errorPassword");
+
+
+    // Validate email before submitting
+    if (!validateEmail(email)) {
+        errorEmail.innerText = "Please enter a valid email address";
+        errorEmail.style.color = "red";
+        isValid = false;
+        return;
+    } else {
+        errorEmail.innerText = ""; // Clear error message if valid
+    }
+
+    // Validate password
+        if (!validatePassword(password)) {
+        errorPassword.innerText = "Password must be at least 8 characters long";
+        errorPassword.style.color = "red";
+        isValid = false;
+    } else {
+        errorPassword.innerText = ""; // Clear error message if valid
+     }
+
+     return isValid
+  }
+
+  
+  function validateEmail(email) {
+        let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    }
+
+    function validatePassword(password) {
+
+        return password.length < 8 ? false : true
+    }
+
+    
+
+
+   
+    async function loginUser() {
+
+        let form = document.getElementById("loginform");
+        let formData = new FormData(form);  
+
+        let dataObject = {}; 
+        formData.forEach((value, key) => {
+            dataObject[key] = value;
+        });
+
+
+        try {
+            let response = await fetch("/login", {
+                method: "POST",                
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify(dataObject)
+            });
+
+            let errorResponse = document.getElementById("errorResult")
+            errorResponse.innerText = ''
+
+           
+            let data = await response.json(); // Directly parse JSON
+
+
+            if (data.success) { // Check success 
+               
+                Swal.fire({
+                        title: "Welcome to Skin.Fit",
+                        text: data.message,
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = "/"; 
+                    });
+              
+            }
+             else {               
+                errorResponse.style.color = "red";
+                errorResponse.innerText = data.message || ", Login failed";
+            }
+        } catch(error) {
+            console.log("Login error:", error);
+            res.redirect("/pageNotFound");
+        }
+    }
+</script>

@@ -1,0 +1,168 @@
+<style>
+    /* Main content section */
+/* General body styles */
+body {
+    background-color: #f8f9fa; /* Light background color */
+    font-family: Arial, sans-serif; /* Font style */
+}
+
+/* Main content section */
+.content-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full height */
+}
+
+/* Card styles */
+.card {
+    background-color: #ffffff; /* White background for the card */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px; /* Padding inside the card */
+}
+
+/* Card title styles */
+.card-title {
+    font-size: 24px; /* Font size for the title */
+    color: #333; /* Dark text color */
+    text-align: center; /* Centered title */
+}
+
+/* Input field styles */
+.form-control {
+    border: 1px solid #ced4da; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px; /* Padding inside the input */
+    width: 100%; /* Full width */
+    transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+/* Input field focus styles */
+.form-control:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Error message styles */
+.error-message {
+    color: #dc3545; /* Red color for error messages */
+    font-size: 14px; /* Font size for error messages */
+    margin-top: 5px; /* Space above error message */
+}
+
+/* Button styles */
+.btn {
+    background-color: #007bff; /* Blue background */
+    color: #ffffff; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+/* Button hover styles */
+.btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Invalid input styles */
+.is-invalid {
+    border-color: #dc3545; /* Red border for invalid inputs */
+}
+</style>
+
+<body>
+
+<section class="content-main mt-80 mb-80">
+    <div class="card mx-auto card-login col-4">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Enter New Email</h4>
+            <form id="updateEmailForm">
+                <div class="mb-3">
+                    <input class="form-control" name="newEmail" placeholder="New Email" type="text" id="email">
+                    <div class="error-message text-danger mt-1" id="email-error"></div>
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+ </section>
+
+
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
+ </body>
+
+
+ <script>
+    const form = document.getElementById('updateEmailForm');
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('email-error');
+ 
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+ 
+        const emailValue = emailInput.value.trim();
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+ 
+        // Client-side validation
+        if (emailValue === '') {
+            emailError.textContent = 'Please enter your new email.';
+            emailInput.classList.add('is-invalid');
+            return;
+        } else if (!emailValue.match(emailPattern)) {
+            emailError.textContent = 'Please enter a valid email address';
+            emailInput.classList.add('is-invalid');
+            return;
+        } else {
+            emailError.textContent = '';
+            emailInput.classList.remove('is-invalid');
+        }
+ 
+        // AJAX request to backend
+        try {
+            const response = await fetch('/update-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ newEmail: emailValue })
+            });
+ 
+            const result = await response.json();
+ 
+            if (result.success) {
+             
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+                emailInput.value = ''; // Clear input field
+
+                // Optional redirect after success
+                setTimeout(() => {
+                    window.location.href = "/userProfile"; // Change this if needed
+                }, 2000);
+                
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: result.message                    
+                });                
+            }
+ 
+        } catch (err) {
+            emailError.textContent = 'Something went wrong. Please try again.';
+        }
+    });
+ </script>

@@ -1,0 +1,43 @@
+<div id="notification-widget" class="hidden">
+    <p id="notification-message"></p>
+</div>
+
+<style>
+    #notification-widget {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: green;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: none;
+        z-index: 1000;
+        font-weight: bold;
+        transition: opacity 0.5s ease-in-out;
+    }
+    .error { background-color: red; }
+    .success { background-color: green; }
+</style>
+
+<script>
+    function showNotification(message, type = "success") {
+        const widget = document.getElementById("notification-widget");
+        const messageBox = document.getElementById("notification-message");
+
+        messageBox.innerText = message;
+        widget.classList.remove("error", "success", "hidden");
+        widget.classList.add(type);
+
+        widget.style.opacity = "1";
+        widget.style.display = "block";
+
+        setTimeout(() => {
+            widget.style.opacity = "0";
+            setTimeout(() => {
+                widget.style.display = "none";
+                widget.classList.add("hidden");
+            }, 500);
+        }, 5000);
+    }
+</script>

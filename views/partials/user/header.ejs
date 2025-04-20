@@ -1,0 +1,102 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Untree.co">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <meta name="description" content="" />
+  <meta name="keywords" content="bootstrap, bootstrap4" />
+
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<link href="css/tiny-slider.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		<title>Skin.Fit</title>
+
+        <style>
+            .dropdown{
+                position: relative;
+                display: inline-block;
+            }
+
+            .dropdown-content{
+                display: none;
+                position: absolute;
+                background-color: white;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                right: 0;
+            }
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                width: 100%;
+
+            }.dropdown:hover .dropdown-content {
+                display: block;
+            }
+            .header{
+                    position: relative;
+                    z-index: 500;
+            }
+        </style>
+
+	</head>
+<!-- Start Header/Navigation -->
+<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+    <div class="container">
+        <a class="navbar-brand" href="/">SKIN.FIT<span></span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsFurni">
+            <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+                
+                <li><a class="nav-link" href="http://localhost:5000/">Home</a></li>
+                <li><a class="nav-link" href="/shop">Shop</a></li>
+             
+                <li><a class="nav-link" href="/about">About us</a></li>
+                <li><a class="nav-link" href="/contact">Contact us</a></li>
+             
+                <% if(locals.user) { %>  
+                    
+                    <li><a class="nav-link" href="/wishlist">Wishlist</a></li>
+
+                    <li><a class="nav-link" href="/cart">Cart</a></li>
+
+                    <li><a class="nav-link" href="/orderHistory">My Orders</a></li>
+                  
+                      
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <%= locals.user.name %>
+                        </a>
+
+
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="/userProfile">Profile</a></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                          </ul>
+                   
+
+                    </li>
+                <% } else { %>
+                    <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                <% } %>
+
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End Header/Navigation -->
