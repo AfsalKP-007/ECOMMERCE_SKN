@@ -1,0 +1,450 @@
+<%- include("../../views/partials/admin/header") %>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --info-color: #3498db;
+      --light-gray: #ecf0f1;
+    }
+
+    .col-md-3 {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin: 10px;
+    }
+
+
+    .error-message {
+      color: red;
+      margin-top: 5px;
+    }
+
+
+    .form-label {
+      margin-bottom: 8px;
+    }
+
+
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+
+    .d-grid {
+      margin-top: 20px;
+    }
+
+
+    .btn-primary {
+      background-color: #007bff;
+      color: #fff;
+      border: 1px solid #007bff;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+  </style>
+
+
+
+  <body class="content-main">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Coupons</h2>
+        <button id="addCouponBtn" onclick="addCoupon()" class="btn btn-success">Coupon+</button>
+
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+
+
+          <div class="col-md-7 ml-105">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Created On</th>
+                    <th>Expire On</th>
+                    <th>Offer Price</th>
+                    <th>Minimum Price</th>
+                    <th>Status</th>
+                    <th>Edit/Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <%for(let i=0;i< coupons.length;i++){%>
+
+                    <tr>
+                      <td class="text-start">
+                        <%=coupons[i].name%>
+                      </td>
+                      <td class="text-start">
+                        <%=new Date(coupons[i].createdOn).toLocaleDateString('en-IN')%>
+                      </td>
+                      <td class="text-start">
+                        <%=new Date(coupons[i].expireOn).toLocaleDateString('en-IN')%>
+                      </td>
+                      <td class="text-start">
+                        <%=coupons[i].offerPrice%>
+                      </td>
+                      <td class="text-start">
+                        <%=coupons[i].minPrice%>
+                      </td>
+                      <td class="text-start">
+                        <%=coupons[i].active%>
+                      </td>
+                      <td class="text-start">
+                     
+                        <button 
+                        class="btn btn-primary btn-sm"
+                        onclick="editCoupon(this)"
+                        data-id="<%= coupons[i]._id %>"
+                        data-name="<%= coupons[i].name %>"
+                        data-start="<%= coupons[i].createdOn.toISOString().split('T')[0] %>"
+                        data-end="<%= coupons[i].expireOn.toISOString().split('T')[0] %>"
+                        data-offer="<%= coupons[i].offerPrice %>"
+                        data-min="<%= coupons[i].minPrice %>"
+                        >
+                        Edit
+                        </button>
+
+
+                        <a href="#" onclick="deleteCoupon('<%=coupons[i]._id%>')" class="btn btn-danger btn-sm"
+                          style="height: 35px;width: 105px;">Delete</a>
+                      </td>
+                    </tr>
+                    <%}%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+
+  <script>
+
+
+    function addCoupon() {
+    const today = new Date().toISOString().split('T')[0];
+
+    Swal.fire({
+        title: 'Coupon +',
+        html: `
+        <input type="text" name="couponName" class="swal2-input" placeholder="Coupon Name">
+        <div id="error-coupon-name" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="date" name="startDate" class="swal2-input" value="${today}">
+        <div id="error-start-date" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="date" name="endDate" class="swal2-input">
+        <div id="error-end-date" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="number" name="offerPrice" class="swal2-input" placeholder="Offer Price" min="0">
+        <div id="error-offer-price" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="number" name="minimumPrice" class="swal2-input" placeholder="Minimum Price" min="0">
+        <div id="error-minimum-price" class="error-message" style="color:red; font-size:13px;"></div>
+        `,
+
+        confirmButtonText: 'Submit',
+        showCancelButton: true,
+        focusConfirm: false,
+        preConfirm: () => {
+        // Clear all old error messages
+        document.querySelectorAll(".error-message").forEach(el => el.innerHTML = "");
+
+        const sDate = document.getElementsByName("startDate")[0].value;
+        const eDate = document.getElementsByName("endDate")[0].value;
+        const sDateObj = new Date(sDate);
+        const eDateObj = new Date(eDate);
+        const todayDateObj = new Date();
+        todayDateObj.setHours(0, 0, 0, 0);
+
+        const name = document.getElementsByName("couponName")[0].value.trim();
+        const nameRegex = /^[A-Za-z0-9]{1,50}$/;
+
+        const offerPriceInput = document.getElementsByName("offerPrice")[0];
+        const minimumPriceInput = document.getElementsByName("minimumPrice")[0];
+        const offerPrice = offerPriceInput.value.trim() !== "" ? parseInt(offerPriceInput.value) : NaN;
+        const minimumPrice = minimumPriceInput.value.trim() !== "" ? parseInt(minimumPriceInput.value) : NaN;
+
+        // Validations
+        if (!nameRegex.test(name)) {
+            document.getElementById("error-coupon-name").innerHTML = "Coupon Name error";
+            return false;
+        }
+
+        if (sDateObj <= todayDateObj) {
+            document.getElementById("error-start-date").innerHTML = "Starting date should be greater than or equal to today's date";
+            return false;
+        }
+
+        if (sDateObj > eDateObj) {
+            document.getElementById("error-end-date").innerHTML = "End date should be after the start date";
+            return false;
+        }
+
+        if (isNaN(offerPrice) || isNaN(minimumPrice)) {
+            document.getElementById("error-offer-price").innerHTML = "Please enter numeric values for Offer Price and Minimum Price";
+            return false;
+        }
+
+        if (offerPrice >= minimumPrice) {
+            document.getElementById("error-offer-price").innerHTML = "Offer Price must be less than Minimum Price";
+            return false;
+        }
+
+        return {
+            couponName: name,
+            startDate: sDate,
+            endDate: eDate,
+            offerPrice,
+            minimumPrice
+        };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+        fetch('/admin/addCoupon', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result.value)
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+            if (body.success) {
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Coupon added successfully!",
+                timer: 1000,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+            } else if (status === 400 && body.status === "duplicate") {
+            Swal.fire("Error!", body.error, "error");
+            } else {
+            Swal.fire("Error!", "Something went wrong.", "error");
+            }
+        })
+        .catch(() => {
+            Swal.fire({
+            title: "Error!",
+            text: "Something went wrong. Please try again.",
+            icon: "error",
+            showCancelButton: true,
+            confirmButtonText: "Retry",
+            cancelButtonText: "Cancel"
+            }).then((retry) => {
+            if (retry.isConfirmed) {
+                document.getElementById("addCouponBtn").click();
+            }
+            });
+        });
+        }
+    });
+    }
+
+
+   
+
+    function editCoupon(btn) {
+    const id = btn.dataset.id;
+    const name = btn.dataset.name;
+    const start = btn.dataset.start;
+    const end = btn.dataset.end;
+    const offer = btn.dataset.offer;
+    const min = btn.dataset.min;
+
+    Swal.fire({
+        title: 'Edit Coupon',
+        html: `
+        <input type="text" name="editCouponName" class="swal2-input" placeholder="Coupon Name" value="${name}">
+        <div id="error-edit-coupon-name" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="date" name="editStartDate" class="swal2-input" value="${start}">
+        <div id="error-edit-start-date" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="date" name="editEndDate" class="swal2-input" value="${end}">
+        <div id="error-edit-end-date" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="number" name="editOfferPrice" class="swal2-input" placeholder="Offer Price" value="${offer}" min="0">
+        <div id="error-edit-offer-price" class="error-message" style="color:red; font-size:13px;"></div>
+
+        <input type="number" name="editMinimumPrice" class="swal2-input" placeholder="Minimum Price" value="${min}" min="0">
+        <div id="error-edit-minimum-price" class="error-message" style="color:red; font-size:13px;"></div>
+        `,
+        confirmButtonText: 'Update',
+        showCancelButton: true,
+        preConfirm: () => {
+            document.querySelectorAll(".error-message").forEach(el => el.innerHTML = "");
+
+            const couponName = document.getElementsByName("editCouponName")[0].value.trim();
+            const startDate = document.getElementsByName("editStartDate")[0].value;
+            const endDate = document.getElementsByName("editEndDate")[0].value;
+            const offerPriceInput = document.getElementsByName("editOfferPrice")[0];
+            const minimumPriceInput = document.getElementsByName("editMinimumPrice")[0];
+
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+            const todayDateObj = new Date();
+            todayDateObj.setHours(0, 0, 0, 0);
+
+            const nameRegex = /^[A-Za-z0-9]{1,50}$/;
+            const offerPrice = offerPriceInput.value.trim() !== "" ? parseInt(offerPriceInput.value) : NaN;
+            const minimumPrice = minimumPriceInput.value.trim() !== "" ? parseInt(minimumPriceInput.value) : NaN;
+
+            let hasError = false;
+
+            if (!nameRegex.test(couponName)) {
+                document.getElementById("error-edit-coupon-name").innerHTML = "Coupon name should be alphanumeric and up to 50 characters.";
+                hasError = true;
+            }
+
+            if (startDateObj > endDateObj) {
+                document.getElementById("error-edit-end-date").innerHTML = "End date should be after the start date.";
+                hasError = true;
+            }
+
+            if (startDateObj < todayDateObj) {
+                document.getElementById("error-edit-start-date").innerHTML = "Start date should be today or in the future.";
+                hasError = true;
+            }
+
+            if (isNaN(offerPrice) || isNaN(minimumPrice)) {
+                document.getElementById("error-edit-offer-price").innerHTML = "Offer and Minimum prices must be valid numbers.";
+                hasError = true;
+            } else if (offerPrice >= minimumPrice) {
+                document.getElementById("error-edit-offer-price").innerHTML = "Offer price must be less than minimum price.";
+                hasError = true;
+            }
+
+            if (hasError) return false;
+
+            return {
+                couponName,
+                startDate,
+                endDate,
+                offerPrice,
+                minimumPrice
+            };
+        }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const res = await fetch(`/admin/editCoupon/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(result.value)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: 'Coupon updated successfully!',
+                        timer: 1000,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Error', data.message || 'Something went wrong', 'error');
+                }
+            }
+        });
+    }
+
+
+    function deleteCoupon(couponId) {
+
+        // First show confirmation
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If confirmed, show loading and proceed with soft delete
+                Swal.fire({
+                    title: "Deleting...",
+                    text: "Please wait while the coupon is being removed.",
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                fetch(`/admin/deleteCoupon`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id: couponId })
+                })
+                .then(async (response) => {
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || "Failed to delete coupon");
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: "The coupon has been marked as deleted.",
+                        confirmButtonText: "OK"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: error.message || "Something went wrong. Please try again."
+                    });
+                });
+            }
+        });
+    }
+
+
+
+   
+
+  </script>
+  <%- include("../../views/partials/admin/footer") %>
