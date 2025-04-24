@@ -170,13 +170,14 @@
                         <span class="detail-value">₹<%= order.price.toFixed(2) %></span>
                     </div>
                     <div class="order-detail">
-                        <span class="detail-label">Total Price</span>
-                        <span class="detail-value">₹<%= order.totalPrice.toFixed(2) %></span>
-                    </div>
-                    <div class="order-detail">
                         <span class="detail-label">Discount</span>
                         <span class="detail-value">₹<%= order.discount.toFixed(2) %></span>
                     </div>
+                    <div class="order-detail">
+                        <span class="detail-label">Total Price</span>
+                        <span class="detail-value">₹<%= order.totalPrice.toFixed(2) %></span>
+                    </div>
+            
                     <div class="order-detail">
                         <span class="detail-label">Delivery Charge</span>
                         <span class="detail-value">₹<%= order.deliveryCharge.toFixed(2) %></span>
@@ -191,7 +192,11 @@
                     </div>
                     <div class="order-detail">
                         <span class="detail-label">Status</span>
-                        <span class="detail-value highlight"><%= order.status %></span>
+                        <span class="detail-value highlight" style="color: rgb(159, 40, 40);"><%= order.status %></span>
+                    </div>
+                    <div class="order-detail">
+                        <span class="detail-label">Payment Method</span>
+                        <span class="detail-value highlight" style="color: rgb(23, 225, 12);"><%= order.paymentMethod %></span>
                     </div>
                 </div>
             </div>

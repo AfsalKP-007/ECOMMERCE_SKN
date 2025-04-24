@@ -1,0 +1,141 @@
+<%- include('../partials/user/header') %>
+
+<style>
+    .failure-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        padding: 2rem;
+        text-align: center;
+        background: #121212;
+    }
+
+    .failure-illustration {
+        max-width: 300px;
+        margin-bottom: 2rem;
+    }
+
+    .failure-statement {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .failure-message {
+        font-size: 1rem;
+        color: #7f8c8d;
+        margin-bottom: 2rem;
+    }
+
+    .failure-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-failure {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-retry {
+        background: #3498db;
+        color: #fff;
+    }
+
+    .btn-retry:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-details {
+        background: #e0e0e0;
+        color: #2c3e50;
+    }
+
+    .btn-details:hover {
+        background: #d0d0d0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+</style>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000000;">
+        <div class="container-fluid">
+            <!-- Mobile Toggle Button (now on left side) -->
+            <button class="navbar-toggler me-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand Logo (moved after toggle button) -->
+            <B><a class="navbar-brand" href="/" style="color: #c4a277;">MAGIC10</a></B>
+
+            <!-- Navbar Content - All right-aligned -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" style="color: #fff;">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shop" style="color: #fff;">SHOP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about" style="color: #fff;">ABOUT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact" style="color: #fff;">CONTACT</a>
+                    </li>
+
+                    <!-- Wishlist and Cart Icons -->
+                    <li class="nav-item">
+                        <a href="/wishlist" class="nav-link" style="color: #fff;">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/cart" class="nav-link" style="color: #fff;">
+                            <i class="fas fa-shopping-bag"></i>
+                        </a>
+                    </li>
+
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="failure-container">
+    <i class="fa fa-exclamation-triangle" style="font-size: 200px;" aria-hidden="true"></i>
+    <h2 class="failure-statement">Payment Failed!</h2>
+    <p class="failure-message">
+        <% if (error) { %>
+            <%= error %>
+        <% } else { %>
+            Something went wrong during the payment process.
+        <% } %>
+    </p>
+    <div class="failure-actions">
+        <button class="btn-failure btn-retry" onclick="retryPayment()">
+            <i class="fas fa-redo"></i> Retry Payment
+        </button>
+    </div>
+</div>
+
+<script>
+    function retryPayment() {
+        window.location.href = "/checkout";
+    }
+</script>
+
+<%- include('../partials/user/footer') %>

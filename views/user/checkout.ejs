@@ -309,13 +309,13 @@
                 </div>
         
 
-                <!-- <div class="payment-card" data-method="razorpay">
+                <div class="payment-card" data-method="razorpay">
                     <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
                         <input type="radio" name="paymentMethod" value="razorpay" style="cursor: pointer;">
                         <i class="fas fa-wallet"></i>
                         <span style="color: black;">Razorpay</span>
                     </label>
-                </div> -->
+                </div>
 
             </div>
         </div>
@@ -324,14 +324,14 @@
         <div class="form-section">
             <h3 class="form-title">Apply Coupon</h3>
             <div class="coupon-section">
-                <input type="text" id="couponCode" name="couponCode" placeholder="Enter Coupon Code">
+                <input type="text" id="couponCode" name="couponCode" placeholder="Enter Coupon Code" style="color: black;">
                 <button type="button" id="applyCoupon"  style="background-color: #3aa7d6;" >Apply</button>
                 <button type="button" id="cancelCoupon" style="display: none;">Cancel Coupon</button>
             </div>
-            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" 
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" 
                     style="background: #ADD6FF; border: none; color: #000; padding: 0.75rem; border-radius: 6px; margin-top: 0.5rem; width: 100%;">
                 View Available Coupons
-            </button> -->
+            </button>
             <p class="discount-info" id="discountInfo" style="display: none;"></p>
             <p class="error-message" id="errorMessage" style="display: none;"></p>
         </div>
@@ -342,8 +342,8 @@
             <h3 class="form-title">Order Summary</h3>
             <div class="order-summary">
                 <% cartItems.forEach(item=> { %>
-                    <div class="summary-item" ">
-                        <span class="product-name" style="color: #000;" >
+                    <div class="summary-item">
+                        <span id="productNameText" class="product-name" style="color: #000;" >
                             <%= item.productId.name %> × <%= item.qty %>
                         </span>
                         <span class="product-price">
@@ -450,6 +450,9 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     
@@ -471,6 +474,7 @@
         });
 
         function copyCoupon(code) {
+
             navigator.clipboard.writeText(code).then(() => {
                 Swal.fire({
                     title: 'Copied successfully',
@@ -566,6 +570,7 @@
                 const data = await response.json();
 
                 if (data.success) {
+
                     discountInfo.innerText = `✅ Coupon Applied! ${data.discountAmount}`;
                     discountInfo.style.display = "block";
                     discount.innerText = `${data.discountAmount}`;
@@ -577,12 +582,20 @@
                     totalAmountInput.value = data.newTotal;
 
                     document.querySelectorAll(".summary-item").forEach((item) => {
-                        const productNameEl = item.querySelector(".product-name");
-                        const productPriceEl = item.querySelector(".original-price");
-                        const discountedPriceEl = item.querySelector(".discounted-price");
 
-                        const productName = productNameEl.textContent.split(" × ")[0].trim();
-                        const discountDetail = data.discountDetails.find((detail) =>
+
+                        var productNameEl = item.querySelector(".product-name");
+
+                        var productPriceEl = item.querySelector(".original-price");
+                        var discountedPriceEl = item.querySelector(".discounted-price");
+
+                        if (!productNameEl) {
+                            console.warn("No .product-name found inside this item:", item);
+                            return; // skip to next item
+                        }
+
+                        var productName = productNameEl.textContent.split(" × ")[0].trim();
+                        var discountDetail = data.discountDetails.find((detail) =>
                             productName.includes(detail.productId.toString())
                         );
 
@@ -670,10 +683,10 @@
                     if (data.success) {
                         const orderData = data.order;
                         const options = {
-                            key: "rzp_test_KrLYrR8hOSocAl",
+                            key: "rzp_test_RtHrIezs4FO0ol",                            
                             amount: orderData.amount,
                             currency: orderData.currency,
-                            name: "MAGIC10",
+                            name: "SKIN.FIT",
                             description: "Order Payment",
                             order_id: orderData.id,
                             handler: function (response) {

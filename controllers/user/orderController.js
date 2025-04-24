@@ -6,15 +6,15 @@ const Product = require('../../models/productSchema')
 const Coupon = require('../../models/couponSchema')
 const Transaction = require('../../models/transactionSchema')
 const Wallet = require('../../models/walletSchema')
-// const Razorpay = require('razorpay')
+const Razorpay = require('razorpay')
 const crypto = require('crypto')
 const HttpStatus = require('../../config/httpStatusCode')
 
 
-// const razorpayInstance = new Razorpay({
-//   key_id: process.env.RAZORPAY_KEY_ID,
-//   key_secret: process.env.RAZORPAY_KEY_SECRET
-// })
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+})
 
 const addOrder = async (req, res) => {
   try {
@@ -48,6 +48,28 @@ const addOrder = async (req, res) => {
       discountedPrice: item.totalPrice,
     }))
 
+    if (singleCouponCode) {
+      const couponData = await Coupon.findOne({ name: singleCouponCode })
+      if (couponData && couponData.minPrice <= totalAmount) {
+        discountAmount = couponData.offerPrice
+        const cartTotalValue = cart.items.reduce(
+          (sum, item) => sum + item.totalPrice,
+          0
+        )
+
+        discountDetails = cart.items.map((item) => {
+          const itemContribution = item.totalPrice / cartTotalValue
+          const itemDiscount = discountAmount * itemContribution
+          return {
+            productId: item.productId._id,
+            qty: item.qty,
+            originalPrice: item.totalPrice,
+            discount: itemDiscount,
+            discountedPrice: item.totalPrice - itemDiscount,
+          }
+        })
+      }
+    }
 
     let orders = []
 
@@ -65,7 +87,7 @@ const addOrder = async (req, res) => {
         product: item.productId._id,
         price: item.productId.salePrice,
         qty: item.qty,
-        totalPrice: item.totalPrice,
+        totalPrice: finalItemAmount,
         deliveryCharge: delivery_Charge,
         discount: itemDiscount,
         discountAmount: itemDiscount,
@@ -88,6 +110,36 @@ const addOrder = async (req, res) => {
 
       await newOrder.save()
       orders.push(newOrder)
+
+
+      /// razor pay
+      if (paymentMethod === "razorpay") {
+        const { razorpay_payment_id } = req.body;
+        console.log(req.body)
+
+        if (!razorpay_payment_id) {
+          console.error("Missing razorpay_payment_id");
+          return res.redirect("/pageNotFound");
+        }
+
+        await Transaction.create({
+          userId: userId,
+          amount: totalAmount,
+          transactionType: "debit",
+          paymentMethod: "online",
+          paymentGateway: "razorpay",
+          gatewayTransactionId: razorpay_payment_id,
+          status: "completed",
+          purpose: "purchase",
+          description: "Online payment for order",
+          orders: orders.map((order) => ({
+            orderId: order._id,
+            amount: order.finalAmount,
+          })),
+        });
+      }
+
+      //-------------------
 
       if (couponCode) {
         const couponData = await Coupon.findOne({ name: couponCode })
@@ -293,9 +345,7 @@ const createRazorpay = async (req, res) => {
       payment_capture: 1
     }
 
-    // const order = await razorpayInstance.orders.create(options)
-
-    // console.log("Razorpay Order created:", order)
+    const order = await razorpayInstance.orders.create(options)
 
     return res.json({ success: true, order })
   } catch (error) {

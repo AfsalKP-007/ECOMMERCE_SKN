@@ -8,6 +8,7 @@ const staticController = require("../controllers/user/staticController")
 const wishlistController = require("../controllers/user/wishlistController")
 const cartController = require("../controllers/user/cartController")
 const orderController = require("../controllers/user/orderController")
+const couponController = require("../controllers/user/couponController")
 
 const upload = require('../config/multer')
 
@@ -119,6 +120,10 @@ router.get('/checkout', userAuth, cartController.loadCheckOut)
 // router.get('/checkout/coupon',userAuth,cartController.loadCheckOutCoupon)
 
 
+// COUPON
+router.post('/applyCoupon', userAuth, couponController.applyCoupon)
+
+
 // ORDER  
 router.post('/addOrder', userAuth, orderController.addOrder)
 router.get('/orderSuccess/:orderId', userAuth, orderController.orderSuccess)
@@ -126,6 +131,11 @@ router.get('/orderHistory', userAuth, orderController.getOrderHistory)
 router.post('/orders/cancel', userAuth, orderController.cancelOrder)
 router.get('/orders/:orderId', userAuth, orderController.getOrderDetails)
 router.post('/orders/retun', userAuth, orderController.returnOrder)
+
+// RAZOR PAY
+router.post('/api/razorpay/createRazorpayOrder',orderController.createRazorpay)
+router.post('/api/razorpay/verifyRazorpayPayment',orderController.verifyRazorpay)
+router.get('/orderFailure',orderController.loadFailure)
 
 
 
