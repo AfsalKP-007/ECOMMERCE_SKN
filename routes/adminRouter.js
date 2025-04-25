@@ -7,6 +7,7 @@ const categoryController = require("../controllers/admin/categoryController");
 const productController = require("../controllers/admin/productController");
 const orderController = require("../controllers/admin/orderController");
 const couponController = require("../controllers/admin/couponController");
+const salesController = require("../controllers/admin/salesController");
 
 const multer = require('multer');
 const upload = multer();
@@ -45,6 +46,8 @@ router.post("/addProduct", adminAuth, upload.fields([
     { name: "image4", maxCount: 1 },
 ]), productController.addProducts);
 
+router.post("/removeProductOffer",productController.removeProductOffer);
+
 router.post("/saveImage", adminAuth, upload.single("image"), productController.saveImage);
 router.post("/changeImage", adminAuth, upload.single('image'), productController.changeImage);
 
@@ -77,5 +80,11 @@ router.get('/orders/:orderId', adminAuth, orderController.getorderdetails)
 router.post('/orders/cancel', adminAuth, orderController.orderCancelled)
 router.post('/orders/update-status', adminAuth, orderController.updateStatus)
 router.post('/orders/handle-return', orderController.orderReturn)
+router.get('/salesReport',adminAuth,orderController.loadSalesReport)
+router.post('/salesReport',orderController.generateSalesReport)
+
+
+// router.get('/sales', adminAuth, salesController.loadSalesPage);
+// router.get('/sales/report', adminAuth, salesController.loadSalesPage);
 
 module.exports = router;

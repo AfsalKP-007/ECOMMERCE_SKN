@@ -1,0 +1,421 @@
+<% - include('../partials/admin/header') %>
+
+  <style>
+    .sales-report-container {
+      /* max-width: 1200px; */
+      height: 90%;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #f7f7f7;
+      /* Dark theme background */
+      border-radius: 12px;
+      /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); */
+      color: #e0e0e0;
+      /* Light text for dark theme */
+    }
+
+    .sales-report-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .sales-report-header h1 {
+      font-size: 2.5rem;
+      color: #46B0CD;
+      font-weight: 700;
+    }
+
+    .filter-section {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-section select,
+    .filter-section input {
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+      background: #ffffff;
+      color: #e0e0e0;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .filter-section input:focus,
+    .filter-section select:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    .filter-section button {
+      background-color: #46B0CD;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-section button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+
+    .report-table th,
+    .report-table td {
+      padding: 1rem;
+      border: 1px solid rgba(52, 152, 219, 0.2);
+      text-align: left;
+    }
+
+    .report-table th {
+      background: #46B0CD;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .report-table td {
+      background: #ffffff;
+      color: rgb(0, 0, 0);
+    }
+
+    .report-summary {
+      background: #fefefe;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(52, 152, 219, 0.2);
+    }
+
+    .report-summary p {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+      color: rgb(0, 0, 0);
+    }
+
+    .download-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn-download {
+      background-color: #46B0CD;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .filter-section {
+        flex-direction: column;
+      }
+
+      .report-table th,
+      .report-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+
+
+  <div class="sales-report-container">
+    <div style="color: black; margin-bottom: 20px;"">
+      <h1>Sales Report</h1>
+      <br>
+    </div>
+
+
+    <!-- Filter Section -->
+<div class="filter-section">
+
+  <div class="" >
+    <label style="color: black;" for="startDate">Start Date:</label>
+    <input style="color: black;"  type="date" id="startDate" />
+  </div>
+
+  <div class="" >
+    <label style="color: black;" for="endDate">End Date:</label>
+    <input style="color: black;"  type="date" id="endDate" />
+  </div>
+
+
+  <!-- Quick Date Buttons -->
+  <div class="quick-buttons">
+    <button onclick="setToday()">Today</button>
+    <button onclick="setThisWeek()">This Week</button>
+    <button onclick="setThisYear()">This Year</button>
+  </div>
+
+  <button  style="display: none;" onclick="generateReport()">Generate Report</button>
+</div>
+
+
+    <!-- Report Table -->
+    <table class="report-table" id="salesReportTable" style="display: none;">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Discount ( Via Coupon )</th>
+          <th>Total Price</th>
+          <th>Coupon Code</th>
+          <th>Payment Method</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="reportTableBody" style="color: #fff;"></tbody>
+    </table>
+
+    <!-- Report Summary -->
+    <div class="report-summary" id="reportSummary" style="display: none; color: #fff;" >
+      <p><strong>Total Sales Count:</strong> <span id="salesCount">0</span></p>
+      <p><strong>Total Order Amount:</strong> <span id="orderAmount">0.00</span></p>
+      <p><strong>Total Discount:</strong> <span id="discountAmount">0.00</span></p>
+    </div>
+
+    <!-- Download Buttons -->
+    <div class="download-buttons" id="downloadButtons" style="display: none;">
+      <button class="btn-download" onclick="downloadPDF()">Download PDF</button>
+      <button class="btn-download" onclick="downloadExcel()">Download Excel</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+ 
+ 
+ 
+ <script>
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    setToday(); 
+    generateReport(); 
+  });
+
+document.getElementById('startDate').addEventListener('change', generateReport);
+document.getElementById('endDate').addEventListener('change', generateReport);
+
+function setToday() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("startDate").value = todayStr;
+  document.getElementById("endDate").value = todayStr;
+
+  generateReport()
+}
+
+function setThisWeek() {
+  const today = new Date();
+  const first = today.getDate() - today.getDay(); // Sunday
+  const last = first + 6; // Saturday
+  const start = new Date(today.setDate(first));
+  const end = new Date(today.setDate(last));
+
+  document.getElementById("startDate").value = formatDate(start);
+  document.getElementById("endDate").value = formatDate(end);
+
+  generateReport()
+}
+
+function setThisYear() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const end = new Date(now.getFullYear(), 11, 31);
+
+  document.getElementById("startDate").value = formatDate(start);
+  document.getElementById("endDate").value = formatDate(end);
+
+
+  generateReport()
+}
+
+function formatDate(date) {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+
+async function generateReport() {
+  const startInput = document.getElementById("startDate").value;
+  const endInput = document.getElementById("endDate").value;
+
+  if (!startInput || !endInput) {
+    Swal.fire("Error", "Please select both start and end dates.", "error");
+    return;
+  }
+
+  const startDate = new Date(startInput);
+  const endDate = new Date(endInput);
+
+  if (startDate > endDate) {
+    Swal.fire("Error", "Start Date cannot be after End Date.", "error");
+    return;
+  }
+
+  try {
+    const response = await fetch("/admin/salesReport", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      }),
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      displayReport(data.orders, data.summary);
+    } else {
+      Swal.fire("Error", data.message || "Failed to generate report.", "error");
+    }
+  } catch (error) {
+    console.error("Error generating report:", error);
+    Swal.fire("Error", "An error occurred while generating the report.", "error");
+  }
+}
+
+
+function displayReport(orders, summary) {
+      const tableBody = document.getElementById("reportTableBody");
+      tableBody.innerHTML = "";
+
+      orders.forEach(order => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                <td>${order.orderId.slice(0,19)}</td>
+                <td>${new Date(order.createdOn).toLocaleString()}</td>
+                <td>${order.product.name}</td>
+                <td>${order.qty}</td>
+                <td>${order.price.toFixed(2)}</td>
+                <td>${order.discount.toFixed(2)}</td>
+                <td>${order.totalPrice.toFixed(2)}</td>
+                <td>${order.couponCode || "N/A"}</td>
+                <td>${order.paymentMethod || "N/A"}</td>
+                 <td>${order.status || "N/A"}</td>
+            `;
+        tableBody.appendChild(row);
+      });
+
+      document.getElementById("salesCount").textContent = summary.salesCount;
+      document.getElementById("orderAmount").textContent = summary.orderAmount.toFixed(2);
+      document.getElementById("discountAmount").textContent = summary.discountAmount.toFixed(2);
+
+      document.getElementById("salesReportTable").style.display = "table";
+      document.getElementById("reportSummary").style.display = "block";
+      document.getElementById("downloadButtons").style.display = "flex";
+    }
+
+
+    function downloadPDF() {
+      if (!window.jspdf) {
+        console.error("jsPDF is not loaded");
+        alert("Failed to generate PDF: jsPDF library not loaded.");
+        return;
+      }
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      doc.setFontSize(20);
+      doc.setTextColor(52, 152, 219);
+      doc.setFont('Roboto', 'sans-serif');
+      doc.text("MAGIC10 - Sales Report", 20, 20);
+
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(52, 152, 219);
+      doc.line(20, 25, 190, 25);
+
+      doc.autoTable({
+        startY: 30,
+        head: [['Order ID', 'Date', 'Product', 'Quantity', 'Total Price', 'Discount', 'Final Amount', 'Coupon']],
+        body: Array.from(document.getElementById("reportTableBody").children).map(row => {
+          return Array.from(row.children).map(cell => cell.textContent);
+        }),
+        styles: { fontSize: 10, cellPadding: 1 },
+        headStyles: { fillColor: [52, 152, 219], textColor: 255 },
+        margin: { left: 20, right: 20 },
+      });
+
+      const finalY = doc.lastAutoTable.finalY || 30;
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('Roboto', 'sans-serif');
+      doc.text("Summary", 20, finalY + 15);
+
+      doc.setFontSize(12);
+      doc.setFont('Roboto', 'sans-serif');
+      doc.text(`Overall Sales Count: ${document.getElementById("salesCount").textContent}`, 20, finalY + 25);
+      doc.text(`Overall Order Amount: ${document.getElementById("orderAmount").textContent}`, 20, finalY + 35);
+      doc.text(`Overall Discount: ${document.getElementById("discountAmount").textContent}`, 20, finalY + 45);
+
+      doc.setFontSize(10);
+      doc.setTextColor(150);
+      doc.setFont('Roboto', 'sans-serif');
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 270);
+      doc.text("MAGIC10", 190, 270, { align: "right" });
+
+      doc.save("Sales_Report.pdf");
+    }
+
+    function downloadExcel() {
+      const table = document.getElementById("salesReportTable");
+      const summary = document.getElementById("reportSummary");
+      const wb = XLSX.utils.book_new();
+
+      const tableData = XLSX.utils.table_to_sheet(table);
+
+      const summaryData = [
+        ["Summary", ""],
+        ["Overall Sales Count", document.getElementById("salesCount").textContent],
+        ["Overall Order Amount", `${document.getElementById("orderAmount").textContent}`],
+        ["Overall Discount", `${document.getElementById("discountAmount").textContent}`],
+      ];
+      const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+
+      XLSX.utils.book_append_sheet(wb, tableData, "Sales Report");
+      XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
+
+      XLSX.writeFile(wb, "Sales_Report.xlsx");
+    }
+
+  </script>
+
+ 

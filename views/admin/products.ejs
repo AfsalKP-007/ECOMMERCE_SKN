@@ -366,7 +366,6 @@ a {
                                 <% } %>
                             </div>
                     
-                            <!-- Name, Brand, Category Section (Right Side) -->
                             <div style="margin-left: 15px; text-align: left;">
                                 <h4><%= data[i].name %></h4>
                                 <span>Category: <%= data[i].category ? data[i].category.name : 'N/A' %></span><br>
@@ -381,16 +380,28 @@ a {
                     <td><%= data[i].salePrice %></td>
                     <td>
                         <%= data[i].regularPrice %>
-                    </td>   
+                    </td> 
+
                     
+                   
                     <td>
-                        <% if (locals.data[i].category && locals.data[i].category.offer) { %>
-                          <%= data[i].category.offer %>%
+                        <% 
+                          const categoryOffer = data[i].category && data[i].category.offer;
+                          const productOffer = data[i].productOffer;
+                          
+                          if (categoryOffer || productOffer) { 
+                        %>
+                          <% if (categoryOffer) { %>
+                            Category: <%= categoryOffer %>% <br>
+                          <% } %>
+                          <% if (productOffer) { %>
+                            Product: <%= productOffer %>%
+                          <% } %>
                         <% } else { %>
-                          0
+                          0%
                         <% } %>
-                        
                       </td>
+                      
                       
                     
                     <td>                        
@@ -435,6 +446,16 @@ a {
                             </a>
                         </button>
                         <%}%>
+
+                        <% } %>
+
+
+                        <%if(data[i].productOffer && data[i].productOffer > 0 ){%>
+                            <button class="btn btn-warning"   title="Remove Offer" onclick="removeOffer('<%= data[i]._id %>'); return false;" >
+                              
+                                Remove Offer
+
+                            </button>
 
                         <% } %>
 
@@ -688,6 +709,42 @@ function confirmUnblockProduct(productId) {
             .catch(error => {
                 console.error('Error:', error);
                 Swal.fire('Error', 'Something went wrong!', 'error');
+            });
+        }
+    });
+}
+
+
+function removeOffer(productId) {
+    Swal.fire({
+        title: "Remove offer",
+        text: "Are you sure you want to remove this offer?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, remove it"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/admin/removeProductOffer",
+                method: 'post',
+                data: {
+                    productId: productId
+                },
+                success: (response) => {
+                    if (response.status) {
+                        Swal.fire("Removed!", "The offer has been removed", "success").then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', response.message || 'Failed to remove offer', 'error');
+                    }
+                },
+                error: (error) => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'An unexpected error occurred', 'error');
+                }
             });
         }
     });

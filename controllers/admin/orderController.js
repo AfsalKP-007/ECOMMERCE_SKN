@@ -248,26 +248,37 @@ const loadSalesReport = async (req, res) => {
 }
 
 const generateSalesReport = async (req, res) => {
+
   try {
-    const { startDate, endDate } = req.body
 
-    const orders = await Order.find({
-      createdOn: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
-    }).populate('product')
+    const fromDate = req.body.startDate ? new Date(req.body.startDate) : new Date();;
+    const toDate = req.body.endDate ? new Date(req.body.endDate) : new Date();;
 
-    const summary = {
-      salesCount: orders.length,
-      orderAmount: orders.reduce((sum, order) => sum + order.totalPrice, 0),
-      discountAmount: orders.reduce((sum, order) => sum + order.discount, 0),
+    // Set fromDate to the start of the day (00:00:00)
+    if (fromDate && !isNaN(fromDate)) {
+      fromDate.setHours(0, 0, 0, 0); // Set to 12:00 AM
     }
 
-    res.json({ success: true, orders, summary })
+    // Set toDate to the end of the day (23:59:59.999)
+    if (toDate && !isNaN(toDate)) {
+      toDate.setHours(23, 59, 59, 999); // Set to 11:59:59.999 PM
+    }
+
+    const orders = await Order.find({
+      createdOn: { $gte: new Date(fromDate), $lte: new Date(toDate) }
+    }).populate('product');
+
+    // Calculate summary
+    const summary = {
+      salesCount: orders.length,
+      orderAmount: orders.reduce((sum, order) => sum + (order.finalAmount || 0), 0),
+      discountAmount: orders.reduce((sum, order) => sum + (order.discountAmount || 0), 0),
+    };
+
+    res.json({ success: true, orders, summary });
   } catch (error) {
-    console.error("Error generating sales report:", error)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: "Error generating sales report" })
+    console.error("Error generating sales report:", error);
+    res.json({ success: false, message: "Failed to generate sales report." });
   }
 }
 

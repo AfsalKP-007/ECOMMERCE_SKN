@@ -34,9 +34,9 @@ const productSchema = new Schema(
       default: 0,
     },
     photos: {
-        type: [String], // Defines an array of strings
-        required: true,
-      },      
+      type: [String], // Defines an array of strings
+      required: true,
+    },
     isBlocked: {
       type: Boolean,
       default: false,
@@ -50,6 +50,12 @@ const productSchema = new Schema(
       enum: ["Available", "Out of stock", "Discountinued"],
       required: true,
       default: "Available",
+    },
+    productOffer: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100
     },
   },
   { timestamps: true }
