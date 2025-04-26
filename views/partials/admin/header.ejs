@@ -51,6 +51,7 @@ body {
         <div class="aside-top">
             <a href="#" class="brand-wrap">
                 <img src="/images/logo2.jpg"  class="logo" alt="Skin.Fit">
+
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -110,7 +111,9 @@ body {
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/images/avatar.png" alt="User"></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
+                             <img class="img-xs rounded-circle" src="/images/avatar.png" alt="User"></a>
+                   
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/admin/adminLogout"><i class="material-icons md-exit_to_app"></i>Logout</a>
@@ -119,3 +122,20 @@ body {
                 </ul>
             </div>
         </header>
+
+
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+           
+                    // Select the profile photo element
+                        const profilePhoto = document.getElementById("profilePhoto");
+
+                    // For example, change src if needed
+                    if (profilePhoto) {
+                    profilePhoto.src = "/path/to/user/photo.jpg"; // Dynamically change
+                    }
+            });
+          </script>
+          

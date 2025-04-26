@@ -14,6 +14,8 @@ const path = require("path");
 const { log } = require("console");
 
 
+
+
 function generateOtp() {
     const digits = "1234567890"
     let otp = "";
@@ -337,26 +339,28 @@ const updateEmail = async (req, res) => {
 
 const EditProfile = async (req, res) => {
     try {
-        const { username, phone, gender, email } = req.body
-
-        const userId = req.params.userId
-        const userData = await User.findById(userId)
+        const { username, phone, gender, email } = req.body;
+        const userId = req.params.userId;
+        const userData = await User.findById(userId);
 
         if (!userData) {
-            console.log('user not found in editProfile')
-            return res.redirect('/pageNotFound')
+            console.log('user not found in editProfile');
+            return res.redirect('/pageNotFound');
         }
-        await User.findByIdAndUpdate(userId, {
+
+        const updatedUser = await User.findByIdAndUpdate(userId, {
             username,
             phone,
             gender
-        }, { new: true, runValidators: true })
-        res.redirect(`/userProfile/edit/${userId}`)
+        }, { new: true, runValidators: true });
+
+        // Render the edit profile page with updated data
+        res.render('user/editProfile', { userData: updatedUser });
     } catch (error) {
-        console.error('error occur while updating user profile', error)
-        res.redirect('/pageNotFound')
+        console.error('error occur while updating user profile', error);
+        res.redirect('/pageNotFound');
     }
-}
+};
 
 
 const updateProfile = async (req, res) => {
@@ -458,7 +462,7 @@ const changePassword = async (req, res) => {
 
         console.log(" PASSWORD UPDATED---------1")
         return res.status(200).json({ success: true, message: 'Password updated Successfully' });
-       
+
     } catch (error) {
         console.error('Error changing password:', error);
         res.status(500).json({ success: false, message: 'An error occurred while changing the password.' });
@@ -701,7 +705,7 @@ module.exports = {
     changeEmailValid,
     verifyEmailOtp,
     updateEmail,
-    changePassword,
+    changePassword
 
 
 }

@@ -124,6 +124,7 @@ router.get('/checkout', userAuth, cartController.loadCheckOut)
 router.post('/applyCoupon', userAuth, couponController.applyCoupon)
 
 
+
 // ORDER  
 router.post('/addOrder', userAuth, orderController.addOrder)
 router.get('/orderSuccess/:orderId', userAuth, orderController.orderSuccess)
@@ -133,9 +134,9 @@ router.get('/orders/:orderId', userAuth, orderController.getOrderDetails)
 router.post('/orders/retun', userAuth, orderController.returnOrder)
 
 // RAZOR PAY
-router.post('/api/razorpay/createRazorpayOrder',orderController.createRazorpay)
-router.post('/api/razorpay/verifyRazorpayPayment',orderController.verifyRazorpay)
-router.get('/orderFailure',orderController.loadFailure)
+router.post('/api/razorpay/createRazorpayOrder', orderController.createRazorpay)
+router.post('/api/razorpay/verifyRazorpayPayment', orderController.verifyRazorpay)
+router.get('/orderFailure', orderController.loadFailure)
 
 
 

@@ -24,7 +24,7 @@ const User = require('./models/userSchema')
 // Check if dotenv loaded correctly
 if (env.error) {
     console.error("Error loading .env file:", env.error);
-    process.exit(1);  
+    process.exit(1);
 }
 
 // Log MongoDB URI for debugging
@@ -46,7 +46,7 @@ app.use(session({
         mongoUrl: process.env.MONGODB_URI,
         collectionName: 'sessions'
     }),
-    
+
     cookie: {
         secure: false,
         httpOnly: true,
@@ -57,7 +57,7 @@ app.use(session({
 app.use((req, res, next) => {
     res.set('cache-control', 'no-store')
     next()
-  })
+})
 
 
 app.use(passport.initialize())
@@ -68,8 +68,8 @@ app.set('views', [path.join(__dirname, 'views/user'), path.join(__dirname, 'view
 
 
 
-app.use("/",userRouter)
-app.use("/admin",adminRouter)
+app.use("/", userRouter)
+app.use("/admin", adminRouter)
 app.use('/uploads', express.static('uploads'));
 
 
