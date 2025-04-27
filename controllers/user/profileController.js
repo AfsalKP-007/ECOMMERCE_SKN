@@ -217,19 +217,84 @@ const loadProfile = async (req, res) => {
     }
 }
 
+
+
+const updateDefaultAddress = async (req, res) => {
+    try {
+        const { addressId } = req.body;
+
+        // Validate input
+        if (!addressId) {
+            return res.status(400).json({ success: false, message: 'Address ID is required' });
+        }
+
+        const userData = req.session.user;
+
+        // Find the user to get user ID
+        const user = await User.findById(userData._id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Find the Address document(s) for the user
+        const addressDocs = await Address.find({ userId: userData._id });
+        if (!addressDocs || addressDocs.length === 0) {
+            return res.status(400).json({ success: false, message: 'No addresses found' });
+        }
+
+
+        // Check if the provided address_id exists in any of the address arrays
+        // let addressExists = false;
+        // for (const doc of addressDocs) {
+        //     if (doc.address.some(addr => addr._id.toString() === address_id.toString())) {
+        //         addressExists = true;
+        //         break;
+        //     }
+        // }
+        // if (!addressExists) {
+        //     return res.status(404).json({ success: false, message: 'Address not found' });
+        // }
+
+        // Step 1: Set defaultAddress to false for all 
+        await Address.updateMany(
+            { userId: userData._id },
+            { $set: { 'address.$[].defaultAddress': false } }
+        );
+
+        // Step 2: Set defaultAddress to true 
+        const result = await Address.updateOne(
+            { userId: userData._id, 'address._id': addressId },
+            { $set: { 'address.$.defaultAddress': true } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ success: false, message: 'Failed to update default address' });
+        }
+
+        res.json({ success: true, message: 'Default address updated successfully' });
+    } catch (error) {
+        console.error('Error updating default address:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+
+
 const loadEditProfile = async (req, res) => {
     try {
-        const { userId } = req.params
-        const userData = await User.findById(userId)
+        const { userId } = req.params;
+        const userData = await User.findById(userId);
+        console.log('User Data:', userData); // Add this line
         if (!userData) {
-            console.log('user not found')
-            return res.redirect('/pageNotFound', { userData })
+            console.log('User not found');
+            return res.status(404).render('pageNotFound', { userData: null });
         }
-        res.render('editProfile', { userData })
+        res.render('editProfile', { userData });
     } catch (error) {
-
+        console.error('Error loading edit profile:', error);
+        res.status(500).render('error', { message: 'Something went wrong' });
     }
-}
+};
 
 
 const changeEmail = async (req, res) => {
@@ -399,8 +464,6 @@ const updateProfile = async (req, res) => {
             { new: true, runValidators: true }
         );
 
-
-
         if (!updatedUser) {
             return res.status(404).json({
                 success: false,
@@ -460,7 +523,6 @@ const changePassword = async (req, res) => {
         user.password = hashedPassword;
         await user.save();
 
-        console.log(" PASSWORD UPDATED---------1")
         return res.status(200).json({ success: true, message: 'Password updated Successfully' });
 
     } catch (error) {
@@ -705,7 +767,6 @@ module.exports = {
     changeEmailValid,
     verifyEmailOtp,
     updateEmail,
-    changePassword
-
-
+    changePassword,
+    updateDefaultAddress
 }

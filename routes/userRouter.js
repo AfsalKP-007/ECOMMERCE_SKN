@@ -100,6 +100,8 @@ router.post("/addAddress", userAuth, profileController.updateAddress)
 router.get("/editAddress", userAuth, profileController.editAddress);
 router.post("/editAddress", userAuth, profileController.postEditAddress)
 router.get("/deleteAddress", userAuth, profileController.deleteAddress)
+router.post('/setDefaultAddress', userAuth, profileController.updateDefaultAddress)
+
 
 
 // WISHLIST

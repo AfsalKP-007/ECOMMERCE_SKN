@@ -2,6 +2,69 @@
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 
+
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+    .sidebar {
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar a {
+        color: #333;
+        display: block;
+        padding: 10px 0;
+        text-decoration: none;
+    }
+    .sidebar a.active {
+        color: #ff6600;
+    }
+    .sidebar a:hover {
+        color: #ff6600;
+    }
+    .sidebar a i {
+        margin-right: 10px;
+    }
+    .main-content {
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .main-content h2 {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        font-weight: bold;
+    }
+    .form-group span {
+        color: red;
+    }
+    .btn-orange {
+        background-color: #ff6600;
+        color: white;
+    }
+    .btn-orange:hover {
+        background-color: #e65c00;
+    }
+    .btn-blue {
+        background-color: #0000ff;
+        color: white;
+    }
+    .btn-blue:hover {
+        background-color: #0000cc;
+    }
+    .photo img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+</style>
+</head>
+
 <style>
  .card-green {
    background-color: #ADD8E6;
@@ -145,6 +208,10 @@
     }
 </style>
 
+
+    
+<br>
+
 <section class="banner-area organic-breadcrumb">
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-between">
@@ -160,8 +227,8 @@
                 <h1>Address Management</h1>
                 <nav class="d-flex align-items-center">
                     <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/userProfile">User Profile<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="#">Address</a>
+                    <a href="/userProfile">/User Profile<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">/Address</a>
                 </nav>
             </div>
         </div>
@@ -171,67 +238,6 @@
 
 
 
-
-    <style>
-        body {
-            background-color: #f7f7f7;
-        }
-        .sidebar {
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar a {
-            color: #333;
-            display: block;
-            padding: 10px 0;
-            text-decoration: none;
-        }
-        .sidebar a.active {
-            color: #ff6600;
-        }
-        .sidebar a:hover {
-            color: #ff6600;
-        }
-        .sidebar a i {
-            margin-right: 10px;
-        }
-        .main-content {
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .main-content h2 {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .form-group span {
-            color: red;
-        }
-        .btn-orange {
-            background-color: #ff6600;
-            color: white;
-        }
-        .btn-orange:hover {
-            background-color: #e65c00;
-        }
-        .btn-blue {
-            background-color: #0000ff;
-            color: white;
-        }
-        .btn-blue:hover {
-            background-color: #0000cc;
-        }
-        .photo img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    </style>
-</head>
 <body>
     <div class="container mt-5">
         <div class="row">
@@ -245,28 +251,27 @@
                     <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
                     <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                   </svg> Address</a>
-                <a href="/orders"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+                <a href="/orderHistory"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
                     <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
                   </svg> Orders</a>
                 <a href="/wishlist"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                     <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                   </svg> Wishlist</a>
-                <a href="/wallet"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet-fill" viewBox="0 0 16 16">
-                    <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542s.987-.254 1.194-.542C9.42 6.644 9.5 6.253 9.5 6a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2z"/>
-                    <path d="M16 6.5h-5.551a2.7 2.7 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5s-1.613-.412-2.006-.958A2.7 2.7 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5z"/>
-                  </svg> Wallet</a>
-                <a href="mycoupons"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
-                    <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
-                    <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
-                  </svg> My Coupons</a>
+         
+
+
                 <a href="#" onclick="confirmLogout(event)" class="text-danger mt-4"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
             <!-- Main Content -->
-            <div class="col-md-9 main-content">
+            <div class="col-md-9 main-content" >
+
                 <%if(userAddress){%>
                     <%userAddress.address.forEach((address) => {%>
-                <div class="bg-white p-4 shadow-sm mb-4">
-                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                <div class="bg-white p-4 shadow-sm mb-4"  >
+
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2"
+                         style="<%= address.defaultAddress ? 'background-color: #ADD6FF;' : 'background-color: white;' %>" 
+                         >
                         <h3 class="font-weight-bold">Shipping Address: <%=address.addressType%></h3>
                         <div class="text-muted">
                             <span>Name:  <%=address.name%></span><br>
@@ -281,7 +286,26 @@
                     <div class="mt-2">
                         <a href="/editAddress?id=<%=address._id%>" class="text-primary mr-4">Edit</a>
                         <a href="/deleteAddress?id=<%=address._id%>" class="text-danger" onclick="return confirm('Are you sure you want to delete this address')">Delete</a>
+
+                   
                     </div>
+
+                    <br>
+
+                    <div class="flex items-center">
+                        <input
+                            type="radio"
+                            id="makeDefault_<%= address._id %>"
+                            name="defaultOption"
+                            value="<%= address._id %>"
+                            <%= address.defaultAddress ? 'checked' : '' %>
+                            onclick="setDefaultAddress('<%= address._id %>')"
+                        >
+                        <label onclick="setDefaultAddress('<%= address._id %>')" >
+                            <%= address && address.defaultAddress === true ? 'Default' : 'Make this as default address' %>
+                        </label>
+                    </div>
+
                 </div>
                 <%})%><%} else{%>
                     <h1>Add New Address</h1>
@@ -293,6 +317,8 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 
@@ -334,6 +360,59 @@
             }
         });
     }
+
+
+  
+    function setDefaultAddress(addressId) {
+
+    if (!addressId) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Invalid address ID.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    fetch('/setDefaultAddress', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ addressId: addressId }),
+    })
+        .then(response => response.json())
+        .then(response => {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Default address updated successfully.',
+                    confirmButtonText: 'OK',
+                    timer: 1000
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message || 'Failed to update default address.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
 
     
 </script>

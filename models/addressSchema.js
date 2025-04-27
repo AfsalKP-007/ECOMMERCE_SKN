@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const addressSchema = new Schema({
     userId: {
@@ -7,50 +7,53 @@ const addressSchema = new Schema({
         ref: 'User',
         required: true
     },
-    address:[{
-        addressType:{
+    address: [{
+        addressType: {
             type: String,
             required: true
         },
-        name:{
+        name: {
             type: String,
             required: true
         },
-        country:{
+        country: {
             type: String,
             required: true
         },
-        city:{
+        city: {
             type: String,
             required: true
         },
-        streetAddress:{
+        streetAddress: {
             type: String,
             required: true
         },
-        landMark:{
+        landMark: {
             type: String,
             required: true
         },
-        state:{
+        state: {
             type: String,
             required: true
         },
-        pincode:{
+        pincode: {
             type: Number,
             required: true
         },
-        phone:{
+        phone: {
             type: String,
             required: true
         },
-        email:{
+        email: {
             type: String,
             required: true
         },
-        altPhone:{
+        altPhone: {
             type: Number,
             required: false
+        }, defaultAddress: {
+            type: Boolean,
+            default: false
         }
     }]
 })
