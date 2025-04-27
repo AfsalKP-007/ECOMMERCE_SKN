@@ -282,12 +282,19 @@
             <div class="custom-select-wrapper">
                 <select name="address" id="address" class="form-control" required>
                     <option value="" disabled selected style="color: #000;">Choose Delivery Address</option>
-                    <% add.forEach(address=> { %>
-                        <option value="<%= address._id %>" style="color: #000;"
-                            data-full-address="<%= `${address.landMark}, ${address.city}, ${address.state} - ${address.pincode}` %>">
+                
+             
+                    <% add.forEach(address => { %>
+                        <option 
+                            value="<%= address._id %>" 
+                            style="color: #000;"
+                            data-full-address="<%= `${address.landmark}, ${address.city}, ${address.state} - ${address.pincode}` %>"
+                            <%= address.defaultAddress ? 'selected' : '' %>
+                        >
                             📌 <%= address.name %> - <%= address.city %>
                         </option>
                     <% }) %>
+
                 </select>
             </div>
             <div class="address-preview" id="addressPreview"></div>
@@ -457,34 +464,41 @@
     
     
     <script>
-        const addressSelect = document.getElementById('address');
-        const addressPreview = document.getElementById('addressPreview');
+   
+   const addressSelect = document.getElementById('address');
+    const addressPreview = document.getElementById('addressPreview');
 
-        addressSelect.addEventListener('change', function () {
-            if (this.value) {
-                const selectedOption = this.options[this.selectedIndex];
-                addressPreview.innerHTML = `
+    function updateAddressPreview() {
+        if (addressSelect.value) {
+            const selectedOption = addressSelect.options[addressSelect.selectedIndex];
+            addressPreview.innerHTML = `
                 <h4>${selectedOption.text.replace('📌 ', '')}</h4>
                 <p>${selectedOption.dataset.fullAddress}</p>
             `;
-                addressPreview.classList.add('active');
-            } else {
-                addressPreview.classList.remove('active');
-            }
-        });
-
-        function copyCoupon(code) {
-
-            navigator.clipboard.writeText(code).then(() => {
-                Swal.fire({
-                    title: 'Copied successfully',
-                    text: 'Coupon code coppied succusfully',
-                    icon: 'success'
-                })
-            }).catch(err => {
-                console.error("Failed to copy: ", err);
-            });
+            addressPreview.classList.add('active');
+        } else {
+            addressPreview.classList.remove('active');
+            addressPreview.innerHTML = ''; // Optional: Clear preview if no address is selected
         }
+    }
+
+ 
+    document.addEventListener('DOMContentLoaded', updateAddressPreview);
+    addressSelect.addEventListener('change', updateAddressPreview);
+
+    
+    function copyCoupon(code) {
+
+        navigator.clipboard.writeText(code).then(() => {
+            Swal.fire({
+                title: 'Copied successfully',
+                text: 'Coupon code coppied succusfully',
+                icon: 'success'
+            })
+        }).catch(err => {
+            console.error("Failed to copy: ", err);
+        });
+    }
 
         document.querySelectorAll('.payment-card').forEach(card => {
             card.addEventListener('click', function () {
