@@ -288,7 +288,7 @@
                         <option 
                             value="<%= address._id %>" 
                             style="color: #000;"
-                            data-full-address="<%= `${address.landmark}, ${address.city}, ${address.state} - ${address.pincode}` %>"
+                            data-full-address="<%= `${address.name}, ${address.landMark}, ${address.city}, ${address.state} - ${address.pincode}` %>"
                             <%= address.defaultAddress ? 'selected' : '' %>
                         >
                             📌 <%= address.name %> - <%= address.city %>
@@ -466,11 +466,14 @@
     <script>
    
    const addressSelect = document.getElementById('address');
-    const addressPreview = document.getElementById('addressPreview');
+   const addressPreview = document.getElementById('addressPreview');
 
     function updateAddressPreview() {
         if (addressSelect.value) {
             const selectedOption = addressSelect.options[addressSelect.selectedIndex];
+
+            console.log( selectedOption , ' ---------------------------- ')
+
             addressPreview.innerHTML = `
                 <h4>${selectedOption.text.replace('📌 ', '')}</h4>
                 <p>${selectedOption.dataset.fullAddress}</p>
