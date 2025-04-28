@@ -9,6 +9,8 @@ const wishlistController = require("../controllers/user/wishlistController")
 const cartController = require("../controllers/user/cartController")
 const orderController = require("../controllers/user/orderController")
 const couponController = require("../controllers/user/couponController")
+const walletController = require("../controllers/user/walletController")
+
 
 const upload = require('../config/multer')
 
@@ -140,6 +142,10 @@ router.post('/api/razorpay/createRazorpayOrder', orderController.createRazorpay)
 router.post('/api/razorpay/verifyRazorpayPayment', orderController.verifyRazorpay)
 router.get('/orderFailure', orderController.loadFailure)
 
+//WALLET
+router.get('/userProfile/wallet/:userId', userAuth, walletController.loadwallet)
+router.post("/wallet/create-order", userAuth, walletController.createRazorpayOrder)
+router.post("/wallet/payment-success", userAuth, walletController.razorpayPaymentSuccess)
 
 
 

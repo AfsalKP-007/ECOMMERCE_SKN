@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt")
 const { StatusCodes } = require("http-status-codes");
 const { log } = require("console");
+const Wallet = require("../../models/walletSchema");
 
 
 async function getCategoryName(id) {
@@ -48,24 +49,63 @@ const verifyOtp = async (req, res) => {
     try {
         const { otp } = req.body;
 
+
+        const referalCode = req.session.userData.referalCode
+
         console.log("User Entered OTP:", otp);
         console.log("Stored OTP in Session:", req.session.userOtp);
 
         if (otp.toString() === req.session.userOtp.toString()) {
             const user = req.session.userData;
             const passwordHash = await securePassword(user.password);
-
             const saveUserData = new User({
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
                 googleId: user.googleId || null,
                 username: '',
-                password: passwordHash
+                password: passwordHash,
             });
 
             await saveUserData.save();
             req.session.user = saveUserData._id;
+
+            // Sign in User WALLET creation =========
+            let wallet = await Wallet.findOne({ userId: saveUserData._id });
+            if (!wallet) {
+                wallet = new Wallet({
+                    userId: saveUserData._id,
+                    balance: 0,
+                    transactions: []
+                });
+
+                await wallet.save();
+            }
+            // =====================
+
+
+            // Referal User ===============
+
+            const referalBonus = 100
+
+            if (referalCode) {
+                const checkReferal = await User.findOne({ referalCode: referalCode })
+
+                if (!checkReferal) {
+                    req.session.Emessage = 'Invalid Referal Code, Please try again'
+                    return
+                }
+                const wallet = await Wallet.findOne({ userId: checkReferal._id })
+                wallet.balance += referalBonus
+                wallet.transactions.push({
+                    type: 'credit',
+                    amount: referalBonus,
+                    description: `Referal Code Credition. for ${ checkReferal.name } `,
+                    date: new Date(),
+                })
+                await wallet.save()
+            }
+            //====================================================================
 
             res.json({ success: true, redirectUrl: "/" });
         } else {
@@ -135,18 +175,14 @@ const sendVerificationEmail = async (email, otp) => {
 
 const signup = async (req, res) => {
 
-
     try {
 
-        let { name, phone, email, password, cPassword } = req.body;
-
-        console.log(email)
+        let { name, phone, email, password, cPassword, referalCode } = req.body;
 
         password = String(req.body.password).trim();
         cPassword = String(req.body.confirmPassword).trim();
 
         if (password !== cPassword) {
-
             return res.status(400).json({ messageType: "passwordError", message: "Password not match." });
         }
 
@@ -157,7 +193,6 @@ const signup = async (req, res) => {
         }
 
         const otp = generateOtp();
-
         const emailSent = await sendVerificationEmail(email, otp);
 
         if (!emailSent) {
@@ -165,9 +200,9 @@ const signup = async (req, res) => {
         }
 
         req.session.userOtp = otp;
-        req.session.userData = { name, phone, email, password };
+        req.session.userData = { name, phone, email, password, referalCode };
 
-        res.json({ success: true, redirect: "/verifyOtp" });
+        res.json({ success: true, redirect: "/verifyOtp", referalCode });
 
         console.log("OTP Sent", otp)
 

@@ -1,0 +1,320 @@
+
+<%- include('../partials/user/header') %>
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Test Page</title>
+
+    
+    <!-- Use absolute paths starting with "/" -->
+
+    <!-- Use absolute paths starting with "/" -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Updated Font Awesome CDN to a more stable version -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="/css/tiny-slider.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="/public/favicon.png">
+
+</head>
+
+<style>
+    /* Responsive adjustments while keeping original colors */
+    .wallet-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    .wallet-header h1 {
+        font-size: 2rem;
+    }
+
+    .wallet-balance-card,
+    .referral-section,
+    .transaction-history {
+        background: #2c2c2c;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 2px solid #3498db;
+    }
+
+    .wallet-balance-card h2,
+    .transaction-history h2,
+    .referral-section h3 {
+        color: #2a0505;
+        margin-bottom: 1rem;
+    }
+
+    .wallet-actions,
+    .referral-input {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 500px;
+    }
+
+    .wallet-actions input,
+    .referral-input input {
+        padding: 0.75rem;
+        border-radius: 8px;
+        border: 1px solid rgba(52, 152, 219, 0.3);
+        background: #333;
+        color: #e0e0e0;
+        width: 100%;
+    }
+
+    .btn-wallet {
+        background-color: #3498db;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .transaction-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        background: #fffbfb;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+
+    .transaction-credit {
+        color: #2980b9;
+        font-size: 18px;
+    }
+
+    .transaction-debit {
+        color: #f44336;
+    }
+
+    .transaction-date {
+        color: #000000;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .pagination a {
+        color: #3498db;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #a0a0a0;
+        padding: 2rem;
+    }
+
+    /* Desktop styles */
+    @media (min-width: 768px) {
+        .wallet-header h1 {
+            font-size: 2.5rem;
+        }
+
+        .wallet-actions,
+        .referral-input {
+            flex-direction: row;
+        }
+
+        .wallet-actions input,
+        .referral-input input {
+            width: auto;
+            flex-grow: 1;
+        }
+
+        .btn-wallet {
+            width: auto;
+        }
+    }
+</style>
+   
+
+<body style="background-color: #bad4d6;">
+    
+
+    <div class="wallet-container container mt-3" >
+        <div class="wallet-header text-center mb-5">
+            <h1 class="display-4">Skin.Fit Wallet</h1>
+        </div>
+    
+        <!-- Wallet Section -->
+        <div class="wallet-balance-card" style="background-color: white; color: #2980b9; ">
+            <%if(balance){%>
+                <h2>Wallet Balance: ₹<span id="walletBalance"><%= balance.toFixed(2) %></span></h2>
+            <%}else{%>
+                <h2>Wallet Balance: ₹<span id="walletBalance">0</span></h2>
+            <%}%>
+            <div class="wallet-actions" >
+                <input type="number" id="amount" placeholder="Enter Amount" style="color: black; background-color: white;">
+                <button class="btn-wallet" onclick="addMoney()">⚽ Add Money</button>
+            </div>
+        </div>
+    
+        <div class="referral-section" style="background-color: white;">
+            <h3>Refer & Earn</h3>
+            <div class="referral-input">
+                <input type="text" value="<%= user.referalCode %>" id="referralCode" style="background-color: white; color: black;" readonly >
+                <button class="btn-wallet" onclick="copyReferralCode()">
+                    <i class="fas fa-share-alt"></i> Copy Code
+                </button>
+            </div>
+            <p>Share your referral code to earn ₹100 when your friend signs up on the Skin.Fit website!</p>
+        </div>
+    
+        <div class="transaction-history" style="background-color: white;">
+            <h2>Transaction History</h2>
+            <% if (transactions) { %>
+                <% transactions.forEach(transaction=> { %>
+                    <div class="transaction-item <%= transaction.type === 'credit' ? 'transaction-credit' : 'transaction-debit' %>">
+                        <div>
+                            <div class="transaction-date">
+                                <%= new Date(transaction.date).toLocaleString() %>
+                            </div>
+                            <div>
+                                <%= transaction.description %>
+                            </div>
+                        </div>
+                        <div style="color: #2980b9; font-size: 18px;" class="<%= transaction.type === 'credit' ? 'transaction-credit' : 'transaction-debit' %>">
+                            <%= transaction.type==='credit' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                        </div>
+                    </div>
+                <% }) %>
+                
+                <% if (totalPages> 1) { %>
+                    <div class="pagination">
+                        <% if (currentPage> 1) { %>
+                            <a href="/userProfile/wallet/<%= user._id %>?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+                        <% } else { %>
+                            <span>Previous</span>
+                        <% } %>
+                        <span>Page <%= currentPage %> of <%= totalPages %></span>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/userProfile/wallet/<%= user._id %>?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+                        <% } else { %>
+                            <span>Next</span>
+                        <% } %>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="empty-state">
+                    <p>Kick Off Your Transactions!</p>
+                    <p>Your wallet transactions will appear here.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</body>
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        function addMoney() {
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (!amount || amount <= 0) {
+                Swal.fire('Error', 'Please enter a valid amount', 'error');
+                return;
+            }
+
+            fetch('/wallet/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        Swal.fire('Error', data.message || 'Failed to create order', 'error');
+                        return;
+                    }
+
+                    const options = {
+                        key: 'rzp_test_RtHrIezs4FO0ol',
+                        amount: data.amount,
+                        currency: data.currency,
+                        order_id: data.orderId,
+                        name: 'Skin.Fit Wallet',
+                        description: 'Add Money to Wallet',
+                        handler: function (response) {
+                            fetch('/wallet/payment-success', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    amount,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                }),
+                            })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        document.getElementById('walletBalance').innerText = data.newBalance;
+                                        Swal.fire('Success', 'Money added successfully!', 'success');
+                                        window.location.reload()
+
+                                    } else {
+                                        Swal.fire('Error', data.message || 'Payment failed', 'error');
+                                    }
+                                })
+                                .catch(err => Swal.fire('Error', 'Server error during payment', 'error'));
+                        },
+                        prefill: {
+                            name: '<%= user.username %>',
+                            email: '<%= user.email %>',
+                            contact: '<%= user.phone %>',
+                        },
+                        theme: { color: '#C4A277' },
+                    };
+
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                })
+                .catch(err => Swal.fire('Error', 'Failed to initiate payment', 'error'));
+        }
+
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode');
+            code.select();
+            document.execCommand('copy');
+            Swal.fire({
+                title: 'Copied!',
+                text: 'Referral code copied to clipboard',
+                icon: 'success',
+                timer: 1000, 
+                showConfirmButton: false  // Hide the "OK" button
+                });        }
+
+        document.querySelectorAll('.fund-option').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.fund-option').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('customAmount').value = this.dataset.amount;
+            });
+        });
+    </script>
+
+
+<%- include('../partials/user/footer') %>

@@ -320,7 +320,7 @@ const returnOrder = async (req, res) => {
     if (!orderData) {
       return res.json({ success: false })
     }
-    orderData.status = 'Return Request'
+    orderData.status = 'Return_Request'
     orderData.returnReason = reason
     await orderData.save()
     return res.json({ success: true, message: 'Your order return request send successfully' })
@@ -377,7 +377,7 @@ const verifyRazorpay = async (req, res) => {
 const loadFailure = async (req, res) => {
   try {
     const { orderId, error } = req.query
-    res.render('oderFailure', { orderId: orderId || '', error: error || '' })
+    res.render('orderFailure', { orderId: orderId || '', error: error || '' })
   } catch (error) {
     console.error("Error occur while loadFailure:", error)
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).redirect('/pageNotFound')

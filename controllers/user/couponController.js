@@ -5,7 +5,8 @@ const HttpStatus = require('../../config/httpStatusCode')
 const applyCoupon = async (req, res) => {
     try {
         const { couponCode, totalAmount } = req.body
-        const userId = req.session.user
+
+        const userId = req.session.user._id
 
         const couponData = await Coupon.findOne({ name: couponCode })
         if (!couponData) {
@@ -45,21 +46,17 @@ const applyCoupon = async (req, res) => {
             const itemDiscount = discountAmount * itemContribution
             return {
                 productId: item.productId._id,
-                quantity: item.quantity,
+                qty: item.qty,
                 originalPrice: item.totalPrice,
                 discount: itemDiscount,
                 discountedPrice: item.totalPrice - itemDiscount,
             }
         })
+
         await couponData.save()
 
-        return res.json({
-            success: true,
-            discountAmount,
-            newTotal,
-            couponCode,
-            discountDetails,
-        })
+        return res.json({ success: true, discountAmount, newTotal, couponCode, discountDetails, })
+        
     } catch (error) {
         console.error("Error verifying Apply offer", error)
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

@@ -67,6 +67,12 @@
                         <div id="error5" class="error-message"></div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Referal Code</label>
+                        <input id="referalCode" name="referalCode" type="text" class="form-control" placeholder="Referal Code" >
+                        <div id="error6" class="error-message"></div>
+                    </div>
+
                     <% if(locals.message && message.length > 0){ %>
                         <div class="alert alert-danger text-center">
                             <%= message %>
@@ -133,6 +139,7 @@
     const passwordid = document.getElementById("password");
     const cpassid = document.getElementById("confirmPassword");
     const iagree = document.getElementById("iagree");
+    const referalC = document.getElementById("referalCode");
 
     const error1 = document.getElementById("error1");
     const error2 = document.getElementById("error2");
@@ -270,7 +277,9 @@
             email: emailid.value,
             phone: phoneid.value,
             password: passwordid.value,
-            confirmPassword: cpassid.value
+            confirmPassword: cpassid.value,
+            referalCode: referalC.value
+
         };
 
         try {

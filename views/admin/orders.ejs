@@ -78,7 +78,7 @@
             <label><input type="checkbox" name="status[]" value="Shipped" <%= status.includes('shipped') ? 'checked' : '' %>> Shipped</label>
             <label><input type="checkbox" name="status[]" value="Delivered" <%= status.includes('delivered') ? 'checked' : '' %>> Delivered</label>
             <label><input type="checkbox" name="status[]" value="Cancelled" <%= status.includes('cancelled') ? 'checked' : '' %>> Cancelled</label>
-            <label><input type="checkbox" name="status[]" value="Return Request" <%= status.includes('return_request') ? 'checked' : '' %>> Return Request</label>
+            <label><input type="checkbox" name="status[]" value="Return_Request" <%= status.includes('return_request') ? 'checked' : '' %>> Return Request</label>
             <label><input type="checkbox" name="status[]" value="Returned" <%= status.includes('returned') ? 'checked' : '' %>> Returned</label>
           </div>
 
@@ -135,7 +135,7 @@
                                     order.status === 'Shipped' ? 'color: white; background-color: orange;' :
                                     order.status === 'Delivered' ? 'color: white; background-color: green;' :
                                     order.status === 'Cancelled' ? 'color: white; background-color: pink;' :
-                                    order.status === 'Return Request' ? 'color: black; background-color: yellow;' :
+                                    order.status === 'Return_Request' ? 'color: black; background-color: yellow;' :
                                     order.status === 'Returned' ? 'color: white; background-color: red;' :
                                     'color: silver;' 
                                   %>">
@@ -151,10 +151,10 @@
                                         <a href="/admin/orders/<%= order._id %>" 
                                            class="btn btn-primary btn-sm" 
                                            style="background-color: #009879; color: #2c3e50; width: 160px; height: 40px;">
-                                           <i class="fa-solid fa-circle-info" style="font-size: 30px; "></i>
+                                           <i  style="font-size: 15px; "> Details</i>
                                         </a>
                                 
-                                        <% if (order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Returned' && order.status !== 'Return Request') { %>
+                                        <% if (order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Returned' && order.status !== 'Return_Request') { %>
                                             <button onclick="updateStatus('<%= order._id %>')" 
                                                 style="background-color: #71C6B6; color: #2c3e50; width: 160px; height: 40px; font-size: 20px; color: white;">
                                                 Update
@@ -263,6 +263,7 @@
 
 
 document.addEventListener('DOMContentLoaded', function () {
+
   const checkboxes = document.querySelectorAll('input[name="status[]"]');
   const allCheckbox = document.querySelector('input[value="all"]');
   const searchInput = document.querySelector('input[name="search"]');

@@ -79,7 +79,7 @@
                             order.status === 'Shipped' ? 'color: white; background-color: orange;' :
                             order.status === 'Delivered' ? 'color: white; background-color: green;' :
                             order.status === 'Cancelled' ? 'color: white; background-color: pink;' :
-                            order.status === 'Return Request' ? 'color: black; background-color: yellow;' :
+                            order.status === 'Return_Request' ? 'color: black; background-color: yellow;' :
                             order.status === 'Returned' ? 'color: white; background-color: red;' :
                             'color: silver;' 
                           %>" >
@@ -92,7 +92,7 @@
                         <!-- Status Timeline -->
                         <div class="status-timeline">
                             <div class="status-line"></div>
-                            <% const statuses=['Pending', 'Confirmed' , 'Shipped' , 'Delivered', 'Cancelled', 'Return Request', 'Returned' ]; %>
+                            <% const statuses=['Pending', 'Confirmed' , 'Shipped' , 'Delivered', 'Cancelled', 'Return_Request', 'Returned' ]; %>
                                 <% statuses.forEach(status=> { %>
                                     <div class="status-point">
                                         <div
@@ -141,13 +141,16 @@
                         </div>
 
                         <!-- Order Actions -->
-                        <% if (order.status==="Return Request" ) { %>
+                        <% if (order.status==="Return_Request" ) { %>
                             <div class="mb-4">
+
                                 <h6>Return Request Reason</h6>
                                 <p>
                                     <%=order.returnReason%>
                                 </p>
-                                <h6>Return Request Actions</h6>
+
+                                <br>
+                                
                                 <button onclick="handleReturn('approve', '<%= order._id %>')"
                                     class="btn btn-success me-2">
                                     Approve Return
@@ -156,7 +159,7 @@
                                     Reject Return
                                 </button>
                             </div>
-                            <% } else if (order.status !=='Cancelled' && order.status !=='Delivered' && order.status !=='Return Request' && order.status !=='Returned' ) { %>
+                            <% } else if (order.status !=='Cancelled' && order.status !=='Delivered' && order.status !=='Return_Request' && order.status !=='Returned' ) { %>
                                 <div class="mt-4">
                                     <button onclick="updateStatus('<%= order._id %>')" class="btn btn-primary me-2">
                                         Update Status

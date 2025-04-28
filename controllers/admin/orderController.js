@@ -52,11 +52,24 @@ const getorderList = async (req, res) => {
 
     // Status filtering
     if (status.length > 0 && !status.includes('all')) {
-      const normalizedStatus = status.map(s => {
+      var normalizedStatus = status.map(s => {
         return s.toLowerCase().split(/[\s_]+/).map(word =>
           word.charAt(0).toUpperCase() + word.slice(1)
         ).join('');
       });
+
+
+      console.log(normalizedStatus);
+
+      // Check if any item contains "ReturnRequest"
+      normalizedStatus = normalizedStatus.map(item => {
+        if (item.includes("ReturnRequest")) {
+          return item.replace("ReturnRequest", "Return_Request");
+        }
+
+        return item; // If not, return as it is
+      });
+
       query.status = { $in: normalizedStatus };
     }
 
@@ -177,14 +190,11 @@ const orderReturn = async (req, res) => {
     const userId = orderData.userId
     const productId = orderData.product
 
-
-
     if (action === 'approve') {
       orderData.status = 'Returned'
       const product = await Product.findOne({ _id: productId })
 
       if (product) {
-
         product.stock = product.stock + orderData.qty
         await product.save()
       }

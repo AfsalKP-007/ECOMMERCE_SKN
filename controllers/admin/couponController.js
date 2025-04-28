@@ -14,12 +14,43 @@ const loadCoupon = async (req, res) => {
 
 const createCoupon = async (req, res) => {
     try {
+        const { couponName, startDate, endDate, offerPrice, minimumPrice } = req.body;
+
+        // Validate required fields
+        if (!couponName || !startDate || !endDate || !offerPrice || !minimumPrice) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields (couponName, startDate, endDate, offerPrice, minimumPrice) are required',
+            });
+        }
+
+        // Validate and create dates
+        const createdOn = new Date(`${startDate}T00:00:00`);
+        const expireOn = new Date(`${endDate}T00:00:00`);
+
+        if (isNaN(createdOn.getTime()) || isNaN(expireOn.getTime())) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid date format for startDate or endDate. Use YYYY-MM-DD format.',
+            });
+        }
+
+        // Validate numeric fields
+        const offerPriceNum = parseInt(offerPrice);
+        const minPriceNum = parseInt(minimumPrice);
+        if (isNaN(offerPriceNum) || isNaN(minPriceNum)) {
+            return res.status(400).json({
+                success: false,
+                message: 'offerPrice and minimumPrice must be valid numbers',
+            });
+        }
+
         const data = {
-            couponName: req.body.couponName,
-            createdOn: new Date(req.body.startDate + 'T00:00:00'),
-            expireOn: new Date(req.body.endDate + 'T00:00:00'),
-            offerPrice: parseInt(req.body.offerPrice),
-            minPrice: parseInt(req.body.minimumPrice)
+            couponName,
+            createdOn,
+            expireOn,
+            offerPrice: offerPriceNum,
+            minPrice: minPriceNum,
         };
 
         const newCoupon = new Coupon({
@@ -27,7 +58,7 @@ const createCoupon = async (req, res) => {
             createdOn: data.createdOn,
             expireOn: data.expireOn,
             offerPrice: data.offerPrice,
-            minPrice: data.minPrice
+            minPrice: data.minPrice,
         });
 
         await newCoupon.save();
@@ -35,19 +66,54 @@ const createCoupon = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: 'Coupon created successfully',
-            coupon: newCoupon
+            coupon: newCoupon,
         });
-
     } catch (error) {
         console.error('Error occurred while creating coupon:', error);
-
         return res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error.message
+            error: error.message,
         });
     }
 };
+
+// const createCoupon = async (req, res) => {
+//     try {
+//         const data = {
+//             couponName: req.body.couponName,
+//             createdOn: new Date(req.body.startDate + 'T00:00:00'),
+//             expireOn: new Date(req.body.endDate + 'T00:00:00'),
+//             offerPrice: parseInt(req.body.offerPrice),
+//             minPrice: parseInt(req.body.minimumPrice)
+//         };
+
+//         const newCoupon = new Coupon({
+//             name: data.couponName,
+//             createdOn: data.createdOn,
+//             expireOn: data.expireOn,
+//             offerPrice: data.offerPrice,
+//             minPrice: data.minPrice
+//         });
+
+//         await newCoupon.save();
+
+//         return res.status(201).json({
+//             success: true,
+//             message: 'Coupon created successfully',
+//             coupon: newCoupon
+//         });
+
+//     } catch (error) {
+//         console.error('Error occurred while creating coupon:', error);
+
+//         return res.status(500).json({
+//             success: false,
+//             message: 'Internal server error',
+//             error: error.message
+//         });
+//     }
+// };
 
 
 
