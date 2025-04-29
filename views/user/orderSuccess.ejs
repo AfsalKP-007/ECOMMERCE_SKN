@@ -169,14 +169,21 @@
                         <span class="detail-label">Price</span>
                         <span class="detail-value">₹<%= order.price.toFixed(2) %></span>
                     </div>
+
+                    <div class="order-detail">
+                        <span class="detail-label">Total Price</span>
+                        <span class="detail-value">₹<%= ( order.totalPrice ) %></span>
+                    </div>
+
+                    <div class="order-detail">
+                        <span class="detail-label">Offer</span>
+                        <span class="detail-value">₹<%= order.productOrCategoryOfferAmount.toFixed(2) %></span>
+                    </div>
                     <div class="order-detail">
                         <span class="detail-label">Discount</span>
                         <span class="detail-value">₹<%= order.discount.toFixed(2) %></span>
                     </div>
-                    <div class="order-detail">
-                        <span class="detail-label">Total Price</span>
-                        <span class="detail-value">₹<%= order.totalPrice.toFixed(2) %></span>
-                    </div>
+               
             
                     <div class="order-detail">
                         <span class="detail-label">Delivery Charge</span>
@@ -184,7 +191,7 @@
                     </div>
                     <div class="order-detail">
                         <span class="detail-label" style="color: black;">Final Amount</span>
-                        <span class="detail-value highlight">₹<%= ( order.totalPrice + order.deliveryCharge ).toFixed(2) %></span>
+                        <span class="detail-value highlight">₹<%= ( order.finalAmount ).toFixed(2) %></span>
                     </div>
                     <div class="order-detail">
                         <span class="detail-label">Coupon Used</span>
@@ -196,7 +203,7 @@
                     </div>
                     <div class="order-detail">
                         <span class="detail-label">Payment Method</span>
-                        <span class="detail-value highlight" style="color: rgb(23, 225, 12);"><%= order.paymentMethod %></span>
+                        <span class="detail-value highlight" style="color: rgb(31, 14, 78);"><%= order.paymentMethod %></span>
                     </div>
                 </div>
             </div>

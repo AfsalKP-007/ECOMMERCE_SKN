@@ -84,7 +84,4 @@ router.get('/salesReport',adminAuth,orderController.loadSalesReport)
 router.post('/salesReport',orderController.generateSalesReport)
 
 
-// router.get('/sales', adminAuth, salesController.loadSalesPage);
-// router.get('/sales/report', adminAuth, salesController.loadSalesPage);
-
 module.exports = router;

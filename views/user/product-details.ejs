@@ -95,6 +95,8 @@
 
 <div class="product_image_area">
 
+    <br>
+
     <div class="container" >
 
         <div id="galleryDiv" class="row s_product_inner">
@@ -116,17 +118,29 @@
 
 				<!-- // Product Details Start -->
 	<div class="col-lg-5 ">
+      
 		<div class="s_product_text" style="margin-top: 20px">
+            
 			<h2><%= product.name %></h2>
 			<h2>₹ <%= Math.round(product.salePrice) %>.00</h2>
-			<h6 style="text-decoration: line-through; color: #ccc;">₹ <%= product.regularPrice %>.00</h6>
+			<!-- <h6 style="text-decoration: line-through; color: #ccc;">₹ <%= product.regularPrice %>.00</h6> -->
 			<ul class="list">
 				<li><span>Category</span>: <%= product.category.name %></li>
 				<li><span>Availability</span>: <span style="color: <%= product.stock >= 1 ? 'green' : 'red' %>"><%= product.stock >= 1 ? 'In Stock' : 'No Stock' %></span></li>
 			</ul>
 			<p><%= product.description %></p>
 
-			
+
+            <% if (totalOffer > 0) { %>
+                <p class="offer" style="color: blue; font-size: 18px;">Offer Applied: <span id="offer"><%= totalOffer %></span>% OFF</p>
+
+                <h5 style="color: blue;">Available for: ₹ <span id="offer"><%= priceAfterDiscount %></span></h5>
+
+                <br>
+
+              <% } %>
+
+                          
 			<div class="card_area d-flex align-items-center gap-3">
 				<button class="btn btn-primary rounded-pill" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
 				<button class="btn btn-danger rounded-pill" onclick="addToWishlist('<%= product._id %>')"

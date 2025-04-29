@@ -183,9 +183,11 @@
           <th>Product</th>
           <th>Qty</th>
           <th>Price</th>
-          <th>Discount ( Via Coupon )</th>
           <th>Total Price</th>
+          <th>Offer</th>
+          <th>Coupon Discount</th>
           <th>Coupon Code</th>
+          <th>Final Price</th>
           <th>Payment Method</th>
           <th>Status</th>
         </tr>
@@ -196,8 +198,10 @@
     <!-- Report Summary -->
     <div class="report-summary" id="reportSummary" style="display: none; color: #fff;" >
       <p><strong>Total Sales Count:</strong> <span id="salesCount">0</span></p>
-      <p><strong>Total Order Amount:</strong> <span id="orderAmount">0.00</span></p>
+      <p><strong>Total Order Amount:</strong> <span id="orderAmount">0.00</span></p>     
+      <p><strong>Total Offer:</strong> <span id="offerAmount">0.00</span></p>
       <p><strong>Total Discount:</strong> <span id="discountAmount">0.00</span></p>
+
     </div>
 
     <!-- Download Buttons -->
@@ -322,11 +326,13 @@ function displayReport(orders, summary) {
                 <td>${order.product.name}</td>
                 <td>${order.qty}</td>
                 <td>${order.price.toFixed(2)}</td>
-                <td>${order.discount.toFixed(2)}</td>
-                <td>${order.totalPrice.toFixed(2)}</td>
+                <td>${ Math.round(order.totalPrice) }</td>
+                <td>${ Math.round( order.productOrCategoryOfferAmount ) }</td>
+                <td>${ Math.round( order.discount ) }</td>
                 <td>${order.couponCode || "N/A"}</td>
+                <td>${ Math.round( order.finalAmount ) }</td>
                 <td>${order.paymentMethod || "N/A"}</td>
-                 <td>${order.status || "N/A"}</td>
+                <td>${order.status || "N/A"}</td>
             `;
         tableBody.appendChild(row);
       });
@@ -334,6 +340,7 @@ function displayReport(orders, summary) {
       document.getElementById("salesCount").textContent = summary.salesCount;
       document.getElementById("orderAmount").textContent = summary.orderAmount.toFixed(2);
       document.getElementById("discountAmount").textContent = summary.discountAmount.toFixed(2);
+      document.getElementById("offerAmount").textContent = summary.offerAmount.toFixed(2);
 
       document.getElementById("salesReportTable").style.display = "table";
       document.getElementById("reportSummary").style.display = "block";
@@ -349,7 +356,7 @@ function displayReport(orders, summary) {
       }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({
-        orientation: "portrait",
+        orientation: "landscape",
         unit: "mm",
         format: "a4",
       });
@@ -357,7 +364,7 @@ function displayReport(orders, summary) {
       doc.setFontSize(20);
       doc.setTextColor(52, 152, 219);
       doc.setFont('Roboto', 'sans-serif');
-      doc.text("MAGIC10 - Sales Report", 20, 20);
+      doc.text("Skin.Fit - Sales Report", 20, 20);
 
       doc.setLineWidth(0.5);
       doc.setDrawColor(52, 152, 219);
@@ -365,9 +372,12 @@ function displayReport(orders, summary) {
 
       doc.autoTable({
         startY: 30,
-        head: [['Order ID', 'Date', 'Product', 'Quantity', 'Total Price', 'Discount', 'Final Amount', 'Coupon']],
+        head: [['Order ID', 'Date', 'Product', 'Qty', 'Price', 'Total Price', 'Offer', 'Discount', 'Coupon Code', 'Final Amount', 'Payment Method', 'Status']],
         body: Array.from(document.getElementById("reportTableBody").children).map(row => {
-          return Array.from(row.children).map(cell => cell.textContent);
+
+          return Array.from(row.children).map(cell => {            
+                return cell.textContent
+          });
         }),
         styles: { fontSize: 10, cellPadding: 1 },
         headStyles: { fillColor: [52, 152, 219], textColor: 255 },
@@ -384,7 +394,8 @@ function displayReport(orders, summary) {
       doc.setFont('Roboto', 'sans-serif');
       doc.text(`Overall Sales Count: ${document.getElementById("salesCount").textContent}`, 20, finalY + 25);
       doc.text(`Overall Order Amount: ${document.getElementById("orderAmount").textContent}`, 20, finalY + 35);
-      doc.text(`Overall Discount: ${document.getElementById("discountAmount").textContent}`, 20, finalY + 45);
+      doc.text(`Overall Offer Amount: ${document.getElementById("offerAmount").textContent}`, 20, finalY + 45);      
+      doc.text(`Overall Discount: ${document.getElementById("discountAmount").textContent}`, 20, finalY + 55);
 
       doc.setFontSize(10);
       doc.setTextColor(150);

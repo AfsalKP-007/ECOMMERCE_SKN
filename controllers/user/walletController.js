@@ -86,14 +86,12 @@ const createRazorpayOrder = async (req, res) => {
             return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Invalid or missing amount' })
         }
 
-        console.log('orderAmount:', orderAmount)
         const order = await razorpayInstance.orders.create({
             amount: Math.round(orderAmount * 100),
             currency: 'INR',
             payment_capture: 1,
         })
-        console.log('order:', order)
-
+    
         res.json({
             success: true,
             orderId: order.id,

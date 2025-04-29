@@ -323,9 +323,10 @@ a {
                 <tr>
                     <th>Product</th>
                     <th>Stock</th>
+                    <th>Regular Price (MRP)</th>  
                     <th>Sale Price</th>
-                    <th>Regular Price</th>  
                     <th>Offer</th>                
+                    <th>Selling Price</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -375,34 +376,43 @@ a {
                         </div>
                     </td>
 
-                    <td> <h6><%= data[i].stock %></h6></td>
-         
-                    <td><%= data[i].salePrice %></td>
+                    <td> <h6><%= data[i].stock %></h6></td>         
+                    
                     <td>
                         <%= data[i].regularPrice %>
                     </td> 
-
                     
+                    <td  style="color: #007f67; font-size: 18px;">  <strong></strong><%= data[i].salePrice %> </strong>  </td>
                    
                     <td>
                         <% 
                           const categoryOffer = data[i].category && data[i].category.offer;
                           const productOffer = data[i].productOffer;
-                          
+                      
                           if (categoryOffer || productOffer) { 
+                            if (categoryOffer > productOffer) { 
                         %>
-                          <% if (categoryOffer) { %>
-                            Category: <%= categoryOffer %>% <br>
-                          <% } %>
-                          <% if (productOffer) { %>
-                            Product: <%= productOffer %>%
-                          <% } %>
-                        <% } else { %>
-                          0%
+                              <h5>Category: <%= categoryOffer %>%</h5><br>
+                              <% if (productOffer) { %>
+                                Product: <%= productOffer %>%
+                              <% } %>
+                        <% 
+                            } else {
+                        %>
+                              <% if (categoryOffer) { %>
+                                Category: <%= categoryOffer %>% <br>
+                              <% } %>
+                              <h5>Product: <%= productOffer %>%</h5>
+                        <% 
+                            }
+                          } else { 
+                        %>
+                          -
                         <% } %>
                       </td>
-                      
-                      
+
+                      <td style="font-size: 15px; font-weight: bold;"><%= data[i].priceAfterDiscount %></td>                 
+                                            
                     
                     <td>                        
                         <%if(data[i].isBlocked === false){%>
@@ -417,14 +427,14 @@ a {
                     
                     <td>
 
-                        <% if (!data[i].isDeleted) { %>
-                    <button id="deleteProduct" style="background-color: red;" class="btn btn-delete delete-product-btn"                       
+                    <% if (!data[i].isDeleted) { %>
+                        
+                    <!-- <button id="deleteProduct" style="background-color: red;" class="btn btn-delete delete-product-btn"                       
                         onclick="confirmDelete('<%=data[i]._id%>')"
                         data-id="<%= data[i]._id %>"
-                        title="Delete Product"                        
-                        >
-                        <i class="fa-solid fa-trash" style="color: white;"></i>
-                     </button>
+                        title="Delete Product" >
+                        <i class="fa-solid fa-trash" style="color: white; display: none;"></i>
+                     </button> -->
 
                      <button id="editProduct" onclick="editProduct('<%=data[i]._id%>')"  title="Edit Product" style="background-color: rgb(67, 87, 223);" class="btn btn-delete edit-product-btn"  
 

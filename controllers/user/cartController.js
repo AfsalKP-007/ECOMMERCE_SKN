@@ -10,6 +10,17 @@ const HttpStatus = require('../../config/httpStatusCode')
 
 
 
+const calculateEffectivePrice = async (product) => {
+
+  const category = await Category.findById(product.category);
+  const categoryOffer = category ? category.offer || 0 : 0;
+  const productOffer = product.productOffer || 0;
+
+  const effectiveOffer = Math.max(categoryOffer, productOffer);
+  const effectivePrice = product.salePrice * (1 - effectiveOffer / 100);
+
+  return Math.round(effectivePrice * 100) / 100;
+};
 
 const addToCart = async (req, res) => {
   try {
@@ -50,15 +61,21 @@ const addToCart = async (req, res) => {
       item.productId.toString() === productId
     )
 
+
+    // Calculate the effective price using the provided calculateEffectivePrice function
+    const priceAfterDiscount = await calculateEffectivePrice(product);
+
     if (existingItem) {
       existingItem.qty += 1
+
+      existingItem.priceAfterDiscount = (existingItem.qty * priceAfterDiscount)
+
       if (existingItem.qty > product.stock) {
         return res.json({ success: false, message: "Cannot add more items than available stock." })
       }
 
       // New Code
       existingItem.totalPrice = (existingItem.qty * existingItem.price)
-
 
     } else {
 
@@ -68,7 +85,8 @@ const addToCart = async (req, res) => {
         price: product.salePrice,
         shipping: shippingCost,
         deliveryCharge: deliveryCharge,
-        totalPrice: (product.salePrice) + shippingCost + deliveryCharge
+        totalPrice: (product.salePrice),
+        priceAfterDiscount: priceAfterDiscount
       })
 
     }
@@ -109,18 +127,22 @@ const loadCart = async (req, res) => {
     })
 
     const subtotal = filteredCartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0)
+    const subTotalPriceAfterDiscount = filteredCartItems.reduce((sum, item) => sum + (item.priceAfterDiscount || 0), 0)
+
+    const totalPriceAfterDiscount = subtotal - subTotalPriceAfterDiscount
 
     let shipping = 0
     let deliveryCharge = 0;
 
-    const total = subtotal + shipping + deliveryCharge
+    const total = (subtotal + shipping + deliveryCharge) - totalPriceAfterDiscount
 
     res.render('cart', {
       cartItems: filteredCartItems,
       user,
       subtotal,
-      shipping,
       deliveryCharge,
+      shipping,
+      totalPriceAfterDiscount,
       total
     })
 
@@ -180,6 +202,15 @@ const updateCartQuantity = async (req, res) => {
       item.totalPrice = 0;
     }
 
+
+    // Calculate the effective price using the provided calculateEffectivePrice function
+    const product = await Product.findById(productId)
+    const priceAfterDiscount = await calculateEffectivePrice(product);
+
+    if (!isNaN(item.qty) && !isNaN(item.priceAfterDiscount)) {
+      item.priceAfterDiscount = parseFloat(item.qty * priceAfterDiscount)
+    }
+
     await cart.save()
     return res.json({ success: true })
   } catch (error) {
@@ -225,7 +256,6 @@ const loadCheckOut = async (req, res) => {
         `${item.name} (Only ${item.availableStock} in stock, you requested ${item.requestedQty})`
       ).join('\n')
 
-
       // Change This to response ////////////////////////////////////////////////////////////////////
       console.log("Some Items Stock is not available")
 
@@ -234,19 +264,32 @@ const loadCheckOut = async (req, res) => {
 
 
 
-    let subTotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0)
+    const subTotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0)
+    const subTotalPriceAfterDiscount = cartItems.reduce((sum, item) => sum + (item.priceAfterDiscount || 0), 0)
 
-    // Old
+    const totalPriceAfterDiscount = subTotal - subTotalPriceAfterDiscount
+
+
     let shipping = 0
     let deliveryCharge = 0
 
-    let totalAmount = subTotal + shipping
-    let discount = subTotal - totalAmount
+    const total = (subTotal + shipping + deliveryCharge) - totalPriceAfterDiscount
+
 
     const addressData = await Address.findOne({ userId })
     const add = addressData ? addressData.address : []
 
-    res.render('checkOut', { user, cartItems, subTotal, deliveryCharge, shipping, add, totalAmount, discount, coupons })
+    res.render('checkOut', {
+      user,
+      cartItems,
+      subTotal,
+      deliveryCharge,
+      shipping,
+      total,
+      totalPriceAfterDiscount,
+      add,
+      coupons
+    })
   } catch (error) {
     console.error('Error occurred while loading checkout:', error)
     return res.redirect('/pageNotFound')

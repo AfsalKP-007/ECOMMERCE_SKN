@@ -20,15 +20,12 @@ const addOrder = async (req, res) => {
   try {
     const { address, paymentMethod, totalAmount, couponCode } = req.body
 
-    // console.log( paymentMethod,  totalAmount, couponCode)  
-
     const userId = req.session.user
     const addresss = await Address.findOne(
       { userId: userId, "address._id": address },
       { "address.$": 1 }
     )
     const addressData = addresss && addresss.address.length > 0 ? addresss.address[0] : null
-
 
     const user = await User.findById(userId)
     const cart = await Cart.findOne({ userId }).populate("items.productId")
@@ -40,6 +37,7 @@ const addOrder = async (req, res) => {
     const singleCouponCode = Array.isArray(couponCode) ? couponCode[0] : couponCode
 
     let discountAmount = 0
+
     let discountDetails = cart.items.map((item) => ({
       productId: item.productId._id,
       qty: item.qty,
@@ -58,6 +56,7 @@ const addOrder = async (req, res) => {
         )
 
         discountDetails = cart.items.map((item) => {
+
           const itemContribution = item.totalPrice / cartTotalValue
           const itemDiscount = discountAmount * itemContribution
           return {
@@ -74,26 +73,32 @@ const addOrder = async (req, res) => {
     let orders = []
 
     for (const item of cart.items) {
+
       const discountDetail = discountDetails.find(
         (d) => d.productId.toString() === item.productId._id.toString()
       )
       const itemDiscount = discountDetail ? discountDetail.discount : 0
-      const finalItemAmount = Number(item.totalPrice || 0) + Number(item.deliveryCharge || 0) - Number(itemDiscount || 0);
 
       const delivery_Charge = 0
+      const productOrCategoryOfferAmount = item.totalPrice - item.priceAfterDiscount;
+
+      const totalPrice = Number(item.totalPrice || 0) + Number(item.deliveryCharge || 0)
+
+      const finalItemAmount = Number(item.totalPrice || 0) + Number(item.deliveryCharge || 0) - Number(itemDiscount || 0) - Number(productOrCategoryOfferAmount || 0);
 
       const newOrder = new Order({
         userId: userId,
         product: item.productId._id,
         price: item.productId.salePrice,
         qty: item.qty,
-        totalPrice: finalItemAmount,
+        totalPrice: totalPrice,
         deliveryCharge: delivery_Charge,
         discount: itemDiscount,
         discountAmount: itemDiscount,
         finalAmount: finalItemAmount,
         couponApplied: !!singleCouponCode,
         couponCode: singleCouponCode || null,
+        productOrCategoryOfferAmount: productOrCategoryOfferAmount,
         paymentMethod: paymentMethod,
         address: {
           name: addressData.name,

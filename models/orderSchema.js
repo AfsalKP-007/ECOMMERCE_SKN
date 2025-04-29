@@ -54,6 +54,10 @@ const orderSchema = new Schema({
     type: Number,
     required: true,
   },
+  productOrCategoryOfferAmount: {
+    type: Number,
+    required: true,
+  },
   address: {
     name: { type: String, required: true },
     city: { type: String, required: true },

@@ -231,6 +231,8 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
+
+
         function addMoney() {
             const amount = parseFloat(document.getElementById("amount").value);
             if (!amount || amount <= 0) {
@@ -246,7 +248,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (!data.success) {
-                        Swal.fire('Error', data.message || 'Failed to create order', 'error');
+                        Swal.fire('Error', data.message || 'Failed to create Razor Pay order, Server Error', 'error');
                         return;
                     }
 

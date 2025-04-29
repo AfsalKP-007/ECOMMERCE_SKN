@@ -137,6 +137,12 @@
       font-weight: 500;
     }
 
+    .discount-price {
+      color: var(--accent-gold);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
     .item-size, .item-color {
       color: var(--text-secondary);
       font-size: 0.9rem;
@@ -465,15 +471,22 @@
       </div>
 
       <% cartItems.forEach(item => { %>
+
         <div class="cart-item">
           <img src="<%= item.productId.photos[0] %>" alt="<%= item.productId.name %>" class="item-image">
           <div class="item-details">
             <h3 class="item-title"><%= item.productId.name %></h3>
             <div class="item-meta">
-              <span>Selling Price: </span> <span class="item-price">₹<%= item.productId.salePrice %></span>
+
+              <br>
+              <span>Our Price: </span> <span class="item-price">₹<%= item.productId.salePrice %></span> 
+             
+            
+              <span>After Offer: </span> 
+              <span class="discount-price">₹<%= (item.priceAfterDiscount / item.qty).toFixed(2) %></span> 
             </div>  
             
-            <!-- <span id="totalPriceLabel" >Total Price: <%= (item.productId.salePrice) * (item.qty)  %></span> -->
+         
 
           </div>
 
@@ -505,17 +518,15 @@
   <% if (cartItems && cartItems.length > 0) { %>
     <div class="order-summary">
       <h2 class="summary-title">Order Summary</h2>
+    
       <div class="summary-item">
         <span>Subtotal:</span>
         <span id="subtotal">₹<%= subtotal %></span>
       </div>
-      <div class="summary-item">
-        <span>Delivery Charge:</span>
-        <span id="shipping">₹<%= deliveryCharge %></span>
-      </div>
+        
       <div class="summary-item">
         <span>Discount:</span>
-        <span id="discount">₹0.00</span>
+        <span id="subTotalDiscount">₹<%= totalPriceAfterDiscount %></span>
       </div>
       <div class="summary-item total">
         <span>Total:</span>
@@ -541,6 +552,7 @@
   <script>  
 
 document.querySelectorAll('.remove-item').forEach(el => {
+  
       el.addEventListener('click', function () {
         const productId = this.dataset.id;
         Swal.fire({
@@ -661,27 +673,29 @@ document.querySelectorAll('.remove-item').forEach(el => {
     function updateTotals() {
 
       let subtotal = 0;
+      let totalDiscountPrice = 0;
+
       document.querySelectorAll('.cart-item').forEach(item => {
+
         const price = parseFloat(item.querySelector('.item-price').textContent.replace('₹', ''));
         const quantity = parseInt(item.querySelector('.stock-input').value);
+        const discountPrice = parseFloat(item.querySelector('.discount-price').textContent.replace('₹', ''));
+
         subtotal += price * quantity;
+        totalDiscountPrice += quantity * discountPrice
+        
       });
 
-      // Old
-      // const shipping = (subtotal > 5000) ? 0 : 100;
-      const shipping = 0
 
-      let discount = 0;
-      // if (currentPromoCode === 'SAVE10') {
-      //   discount = subtotal * 0.10;
-      // }
+      
+      const totalDiscount = ( subtotal -  totalDiscountPrice )
+      const grandTotal = subtotal - totalDiscount
 
-      const total = subtotal + shipping - discount;
+      
 
       document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-      document.getElementById('shipping').textContent = shipping.toFixed(2);
-      document.getElementById('discount').textContent = discount.toFixed(2);
-      document.getElementById('total').textContent = total.toFixed(2);
+      document.getElementById('subTotalDiscount').textContent = totalDiscount.toFixed(2);
+      document.getElementById('total').textContent = grandTotal.toFixed(2);
     }
 
     updateTotals();

@@ -31,6 +31,10 @@
 		max-width: 70% !important;
 		}
 
+		.card_area {
+		z-index: 3;
+		}
+
 	</style>
 
 
@@ -104,28 +108,46 @@
 		      		
 					<% for(i = 0; i < products.length; i++ ) { %>
 
-						<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0" style="margin-top: 50px;">
+						<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0 " style="margin-top: 50px;">
+							
 							
 							<a class="product-item" href="/productDetails?id=<%=products[i]._id%>">
+
 								<img src="<%= products[i].photos[0] %>" class="img-fluid product-thumbnail">
 
-								<h3 class="product-title"> <%=products[i].name%> </h3>
-								<strong class="product-price">₹ <%=products[i].salePrice%>.00 </strong>
+								<h3 class="product-title" style="font-size: 18px;"> <%=products[i].name%> </h3>
 								<h3><%= products[i].category ? products[i].category.name : 'N/A' %> </h3>						
+
+								<br>
+							
+
+								<h6>MRP:  ₹ <%=products[i].regularPrice%>.00 </h6>
+								
+								<h5>Our Price:  ₹ <%=products[i].salePrice%>.00</h5>
+								
+								<br>
+								<strong class="product-price">Today's Price:  ₹ <%=products[i].priceAfterDiscount%>.00 </strong>
 	
 								<span class="icon-cross">
 									<img src="images/cross.svg" class="img-fluid">
 								</span>
 							</a>
 
-							<br>
-							<div class="card_area d-flex align-items-center gap-3">
-								<button  onclick="addToCart('<%= products[i]._id %>')">Add to Cart</button>
-								<button 	 onclick="addToWishlist('<%= products[i]._id %>')"
-									data-product-id="<%= products[i]._id %>" >
+							
+							<div class="card_area d-flex justify-content-center align-items-center gap-2 img-fluid product-thumbnail" 
+								style="background: linear-gradient(to bottom, rgba(247, 247, 247, 0.525), rgb(246, 244, 244)); height: 100px;">															
+
+								<button style="height: 50px;" onclick="addToCart('<%= products[i]._id %>')">
+									Add to Cart
+								</button>
+
+								<button style="height: 50px;" onclick="addToWishlist('<%= products[i]._id %>')"
+										data-product-id="<%= products[i]._id %>">
 									Add to Wishlist
 								</button>
+
 							</div>
+				
 						</div> 
 					<%}%>
 				</div>

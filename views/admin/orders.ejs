@@ -95,9 +95,11 @@
                             <th>Customer</th>
                             <th>Order ID</th>    
                             <th>Qty</th>
-                            <th>Price</th>   
-                            <th>Delivery Charge</th>                        
-                            <th>Final Amount</th>
+                            <th>Price</th>                       
+                            <th>Total Price</th>
+                            <th>Offer</th>  
+                            <th>Coupon Discount</th>  
+                            <th>Final Amount</th>  
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -119,13 +121,14 @@
                                 </td>
                                 <td><%= order.address.name %></td>
                                 <td>#<%= order.orderId %></td>
+                                
+                                <td style="font-size: 18px;"><%= Math.round(order.qty) %></td>
+                                <td style="font-size: 18px;"><%= Math.round(order.price) %></td>
 
-                                <td><%= order.qty %></td>
-
-                                <td>₹<%= order.price %></td>
-                                <td>₹<%= order.deliveryCharge %></td>
-
-                                <td style="font-size: 18px;">₹<%= Math.round(order.totalPrice) %></td>
+                                <td style="font-size: 18px;"><%= Math.round(order.totalPrice) %></td>
+                                <td style="font-size: 18px;"><%= Math.round(order.productOrCategoryOfferAmount) %></td>
+                                <td style="font-size: 18px;"><%= Math.round(order.discountAmount) %></td>
+                                <td style="font-size: 18px;">₹<%= Math.round(order.finalAmount) %></td>
                                 <td>
 
                                    

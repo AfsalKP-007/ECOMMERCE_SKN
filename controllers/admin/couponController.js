@@ -2,15 +2,17 @@ const Coupon = require('../../models/couponSchema')
 const moment = require('moment')
 const HttpStatus = require('../../config/httpStatusCode')
 
+
 const loadCoupon = async (req, res) => {
     try {
-        const findCoupons = await Coupon.find({})
-        return res.render('coupons', { coupons: findCoupons })
+        const findCoupons = await Coupon.find({ active: true });
+        return res.render('coupons', { coupons: findCoupons });
     } catch (error) {
-        console.error('error occur while loadCoupon', error)
-        return res.redirect('pageerror')
+        console.error('error occurred while loading coupons', error);
+        return res.redirect('pageerror');
     }
 }
+
 
 const createCoupon = async (req, res) => {
     try {

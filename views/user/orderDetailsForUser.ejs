@@ -1,4 +1,28 @@
 
+
+<%- include('../partials/user/header') %>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Test Page</title>
+
+    
+    <!-- Use absolute paths starting with "/" -->
+
+    <!-- Use absolute paths starting with "/" -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Updated Font Awesome CDN to a more stable version -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="/css/tiny-slider.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="/public/favicon.png">
+
+</head>
+
+
+
   <style>
     .order-details-container {
       max-width: 800px;
@@ -74,27 +98,24 @@
       <div class="item">
         <img src="/<%= Array.isArray(order.product.photos) ? order.product.photos[0] : order.product.photos %>" >
         <div class="item-details">
-          <p><strong>Product:</strong>
-            <%= order.product.name %>
-          </p>
-          <p><strong>Qty:</strong>
-            <%= order.qty %>
-          </p>
-          <p><strong>Price:</strong> ₹<%= order.price.toFixed(2) %>
-          </p>
-          <p><strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %>
-          </p>
-          <p><strong>Delivery Charge::</strong> ₹<%= order.deliveryCharge.toFixed(2) %>
-          </p>
+
+          <p><strong>Product:</strong> <%= order.product.name %> </p>
+          <p><strong>Qty:</strong> <%= order.qty %> </p>
+          <p><strong>Price:</strong> ₹<%= order.price.toFixed(2) %> </p>
+          <p><strong>Total Price:</strong> ₹<%=  Math.round(order.totalPrice) %> </p>
+        
           <% if (order.discount> 0) { %>
-            <p><strong>Discount:</strong> ₹<%= order.discount.toFixed(2) %>
-            </p>
-            <% } %>
-              <p><strong>Final Price:</strong> ₹<%= (order.totalPrice  + order.deliveryCharge).toFixed(2) %>
-              </p>
-              <p><strong>Order status:</strong>
-                <%= order.status %>
-              </p>
+            <p><strong>Discount:</strong> ₹<%= Math.round(order.discount) %> </p>
+         <% } %>
+
+         <% if (order.productOrCategoryOfferAmount> 0) { %>
+          <p><strong>Offer:</strong> ₹<%= Math.round(order.productOrCategoryOfferAmount) %> </p>
+       <% } %>
+
+            <h3><strong>Final Price:</strong> ₹<%= Math.round(order.finalAmount) %> </h3>
+             
+            <p><strong>Order status:</strong> <%= order.status %> </p>
+
         </div>
       </div>
     </div>
@@ -143,41 +164,45 @@
   <script>
 
 
-function confirmDownload() {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "Do you want to download this order as PDF?",
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, download it!'
-}).then((result) => {
-    if (result.isConfirmed) {
-      downloadPDF(); // <-- Your original function
-    }
-  }).then(() =>{
+  function confirmDownload() {
     Swal.fire({
-    title: 'Downloaded!',
-    text: 'Your order has been downloaded successfully.',
-    icon: 'success',
-    timer: 1500
+      title: 'Are you sure?',
+      text: "Do you want to download this order as PDF?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, download it!'
+  }).then((result) => {
+      if (result.isConfirmed) {
+        downloadPDF(); // <-- Your original function
+      }
+    }).then(() =>{
+      Swal.fire({
+      title: 'Downloaded!',
+      text: 'Your order has been downloaded successfully.',
+      icon: 'success',
+      timer: 1500
+    });
   });
-});
-}
+  }
 
 
-        function downloadPDF () {
+       function downloadPDF () {
 
         const orderData = {
             name: <%- JSON.stringify(order.product.name) %>,
             createdOn: <%- JSON.stringify(order.createdOn) %>,
             qty: <%= order.qty %>,
             price: <%= order.price.toFixed(2) %>,
-            totalPrice: <%= order.totalPrice.toFixed(2) %>,
-            deliveryCharge: <%= order.deliveryCharge.toFixed(2) %>,
-            discount: <%= order.discount || 0 %>,
-            finalAmount: <%= (order.totalPrice  +  order.deliveryCharge).toFixed(2) %>,
+
+            totalPrice: <%= Math.round(order.totalPrice) %>,
+            deliveryCharge: <%= Math.round(order.deliveryCharge) %>,
+
+            offer: <%= Math.round(order.productOrCategoryOfferAmount) || 0 %>,
+            discount: <%= Math.round(order.discount) || 0 %>,
+            finalAmount: <%= Math.round(order.finalAmount) %>,
+
             imageUrl: <%- JSON.stringify(baseUrl + "/" + (Array.isArray(order.product.photos) ? order.product.photos[0] : order.product.photos)) %>,
             address: {
             name: <%- order.address ? JSON.stringify(order.address.name) : '""' %>,
@@ -289,7 +314,15 @@ function confirmDownload() {
             doc.text('Discount:', textX, yPos);
             doc.setFont('helvetica', 'normal');
             doc.text(`Rs.${orderData.discount.toFixed(2)}`, textX + 40, yPos);
-        }
+            }
+
+            if (orderData.offer > 0) {
+            yPos += 10;
+            doc.setFont('helvetica', 'bold');
+            doc.text('Offer:', textX, yPos);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Rs.${orderData.offer.toFixed(2)}`, textX + 40, yPos);
+            }
         
         yPos += 10;
         doc.setFont('helvetica', 'bold');
@@ -363,3 +396,4 @@ function confirmDownload() {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
+    <%- include('../partials/user/footer') %> 

@@ -100,7 +100,7 @@ const verifyOtp = async (req, res) => {
                 wallet.transactions.push({
                     type: 'credit',
                     amount: referalBonus,
-                    description: `Referal Code Credition. for ${ checkReferal.name } `,
+                    description: `Referal Code Credition. for ${checkReferal.name} `,
                     date: new Date(),
                 })
                 await wallet.save()
@@ -255,43 +255,46 @@ const loadHomePage = async (req, res) => {
 
 
 
+
+const calculateEffectivePrice = async (product) => {
+
+    const category = await Category.findById(product.category);
+    const categoryOffer = category ? category.offer || 0 : 0;
+    const productOffer = product.productOffer || 0;
+
+    const effectiveOffer = Math.max(categoryOffer, productOffer);
+    const effectivePrice = product.salePrice * (1 - effectiveOffer / 100);
+
+    return Math.round(effectivePrice * 100) / 100;
+};
+
 const loadShoppingPage = async (req, res) => {
     try {
         const user = req.session.user;
         const userData = user ? await User.findOne({ _id: user }) : null;
 
-        // Pagination setup
         const page = parseInt(req.query.page) || 1;
         const limit = 6;
         const skip = (page - 1) * limit;
 
-
-        // Category filter
         const categories = await Category.find({ isListed: true, status: true });
         const categoryIds = categories.map(category => category._id);
 
-
-        // Initialize query object
         let query = {
             isBlocked: false,
             isDeleted: false,
-            category: { $in: categories.map(category => category._id) },
+            category: { $in: categoryIds },
             stock: { $gt: 0 }
         };
 
-        // Search filter
         if (req.query.search) {
             query.name = { $regex: req.query.search, $options: "i" };
         }
 
-
         if (req.query.category) {
-            query.category = req.query.category; // Match exact category
-        } else {
-            query.category = { $in: categoryIds }; // Default to all listed categories
+            query.category = req.query.category;
         }
 
-        // Sorting options
         let sort = {};
         switch (req.query.sort) {
             case "price_asc":
@@ -310,10 +313,9 @@ const loadShoppingPage = async (req, res) => {
                 sort = { name: -1 };
                 break;
             default:
-                sort = { createdAt: -1 }; // Default to latest products
+                sort = { createdAt: -1 };
         }
 
-        // Fetch categories with product count
         const categoriesWithCounts = await Category.aggregate([
             {
                 $match: { isListed: true, status: true }
@@ -348,20 +350,27 @@ const loadShoppingPage = async (req, res) => {
         ]);
 
         // Fetch filtered and sorted products
-        const products = await Product.find(query)
+        const productData = await Product.find(query)
             .sort(sort)
             .skip(skip)
             .limit(limit)
-            .populate("category")
+            .populate("category");
 
-        // Get total product count for pagination
+        //  Add priceAfterDiscount 
+        const productsWithEffectivePrices = await Promise.all(productData.map(async (product) => {
+            const effectivePrice = await calculateEffectivePrice(product);
+            return {
+                ...product.toObject(),
+                priceAfterDiscount: effectivePrice
+            };
+        }));
+
         const totalProducts = await Product.countDocuments(query);
         const totalPages = Math.ceil(totalProducts / limit);
 
-        // Render shop page with all necessary data
         res.render("shop", {
             user: userData,
-            products: products,
+            products: productsWithEffectivePrices,
             categories: categoriesWithCounts,
             totalProducts: totalProducts,
             currentPage: page,
@@ -377,6 +386,7 @@ const loadShoppingPage = async (req, res) => {
         res.status(500).redirect("/pageNotFound");
     }
 };
+
 
 
 

@@ -283,7 +283,7 @@
             <div class="custom-select-wrapper">
                 <select name="address" id="address" class="form-control" required>
                     <option value="" disabled selected style="color: #000;">Choose Delivery Address</option>
-                
+               
              
                     <% add.forEach(address => { %>
                         <option 
@@ -364,7 +364,7 @@
                         </span>
                     </div>
                 <% }) %>
-
+            
                 <div class="summary-item">
                     <span style="color: #000;">Subtotal:</span>
                     <span>₹<span id="subtotal" name="subTotal" style="color: #000;">
@@ -372,7 +372,10 @@
                         </span></span>
                 </div>
 
-                <div class="summary-item">
+                <br>
+
+
+                <div class="summary-item" style="display: none;">
                     <span style="color: #000;">Delivery Charge:</span>
                     <span>₹<span id="shipping" name="shipping" style="color: #000;">
                             <%= deliveryCharge %>.00
@@ -380,9 +383,16 @@
                 </div>
 
                 <div class="summary-item">
-                    <span style="color: #000;">Discount:</span>
+                    <span style="color: #000;">Coupon Discount:</span>
                     <span>-₹<span id="discount" name="discount" style="color: #000;">
                             0.00
+                        </span></span>
+                </div>
+
+                <div class="summary-item">
+                    <span style="color: #000;">Offer Discount:</span>
+                    <span>-₹<span id="offer-discount" name="offerDiscount" style="color: #000;">
+                        <%= totalPriceAfterDiscount %>.00
                         </span></span>
                 </div>
 
@@ -390,9 +400,9 @@
                 <div class="summary-item total">
                     <span style="color: #000;">Total Amount:</span>
                     <span>₹<span id="total" name="shipping" style="color: #000;">
-                            <%= totalAmount %>.00
+                            <%= total %>.00
                         </span></span>
-                    <input type="hidden" id="totalAmountInput" name="totalAmount" value="<%= totalAmount %>">
+                    <input type="hidden" id="totalAmountInput" name="totalAmount" value="<%= total %>">
                 </div>
             </div>
         </div>

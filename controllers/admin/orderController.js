@@ -276,12 +276,13 @@ const generateSalesReport = async (req, res) => {
 
     const orders = await Order.find({
       createdOn: { $gte: new Date(fromDate), $lte: new Date(toDate) }
-    }).populate('product');
+    }).populate('product').sort({ createdOn: -1 });;
 
     // Calculate summary
     const summary = {
       salesCount: orders.length,
       orderAmount: orders.reduce((sum, order) => sum + (order.finalAmount || 0), 0),
+      offerAmount: orders.reduce((sum, order) => sum + (order.productOrCategoryOfferAmount || 0), 0),
       discountAmount: orders.reduce((sum, order) => sum + (order.discountAmount || 0), 0),
     };
 

@@ -137,7 +137,6 @@ const changeImage = async (req, res) => {
 
     const { productId, index } = req.body;
 
-    console.log(" WORKING ________________")
 
     if (!req.file) {
       return res.status(400).json({ success: false, message: "No image uploaded" });
@@ -161,12 +160,13 @@ const changeImage = async (req, res) => {
 
 
 const calculateEffectivePrice = async (product) => {
+
   const category = await Category.findById(product.category);
-  const categoryOffer = category ? category.categoryOffer || 0 : 0;
+  const categoryOffer = category ? category.offer || 0 : 0;
   const productOffer = product.productOffer || 0;
 
   const effectiveOffer = Math.max(categoryOffer, productOffer);
-  const effectivePrice = product.regularPrice * (1 - effectiveOffer / 100);
+  const effectivePrice = product.salePrice * (1 - effectiveOffer / 100);
 
   return Math.round(effectivePrice * 100) / 100;
 };
@@ -218,7 +218,7 @@ const getAllProducts = async (req, res) => {
       const effectivePrice = await calculateEffectivePrice(product);
       return {
         ...product.toObject(),
-        salePrice: effectivePrice
+        priceAfterDiscount: effectivePrice
       };
     }));
 
