@@ -14,7 +14,7 @@ const loadwallet = async (req, res) => {
         if (page < 1) page = 1
         const skip = (page - 1) * limit
         const wallet = await Wallet.findOne({ userId: userId })
-        console.log('wallet:', wallet)
+        // console.log('wallet:', wallet)
         if (!wallet) {
             const balance = 0
             const transactions = null
@@ -91,7 +91,7 @@ const createRazorpayOrder = async (req, res) => {
             currency: 'INR',
             payment_capture: 1,
         })
-    
+
         res.json({
             success: true,
             orderId: order.id,
@@ -139,7 +139,7 @@ const razorpayPaymentSuccess = async (req, res) => {
             wallet.transactions.push({
                 type: 'credit',
                 amount: amountToAdd,
-                description: 'Wallet top-up', 
+                description: 'Wallet top-up',
                 date: new Date(),
             })
         }

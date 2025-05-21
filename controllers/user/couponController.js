@@ -56,7 +56,7 @@ const applyCoupon = async (req, res) => {
         await couponData.save()
 
         return res.json({ success: true, discountAmount, newTotal, couponCode, discountDetails, })
-        
+
     } catch (error) {
         console.error("Error verifying Apply offer", error)
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -66,4 +66,35 @@ const applyCoupon = async (req, res) => {
     }
 }
 
-module.exports = { applyCoupon }
+
+
+const cancelCoupon = async (req, res) => {
+    try {
+        const { couponCode } = req.body;
+        const userId = req.session.user._id;
+
+        const coupon = await Coupon.findOne({ name: couponCode });
+        if (!coupon) {
+            return res.status(404).json({ success: false, message: "Coupon not found" });
+        }
+
+        // Remove user from usedBy list (if exists)
+        coupon.usedBy = coupon.usedBy.filter(id => id.toString() !== userId.toString());
+        await coupon.save();
+
+        return res.status(200).json({ success: true, message: "Coupon cancelled successfully" });
+
+    } catch (error) {
+        console.error("Error cancelling coupon:", error);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Server error cancelling coupon",
+        });
+    }
+};
+
+module.exports = {
+    applyCoupon,
+    cancelCoupon,
+
+}

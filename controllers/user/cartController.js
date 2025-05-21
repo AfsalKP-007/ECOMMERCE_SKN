@@ -310,6 +310,15 @@ const loadCheckOutCoupon = async (req, res) => {
   }
 }
 
+
+
+
+
+
+
+
+
+
 module.exports = {
   addToCart,
   loadCart,

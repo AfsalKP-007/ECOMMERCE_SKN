@@ -126,6 +126,7 @@ router.get('/checkout', userAuth, cartController.loadCheckOut)
 
 // COUPON
 router.post('/applyCoupon', userAuth, couponController.applyCoupon)
+router.post('/cancelCoupon', userAuth, couponController.cancelCoupon)
 
 
 

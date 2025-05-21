@@ -484,8 +484,6 @@
         if (addressSelect.value) {
             const selectedOption = addressSelect.options[addressSelect.selectedIndex];
 
-            console.log( selectedOption , ' ---------------------------- ')
-
             addressPreview.innerHTML = `
                 <h4>${selectedOption.text.replace('📌 ', '')}</h4>
                 <p>${selectedOption.dataset.fullAddress}</p>
@@ -569,7 +567,7 @@
             displayCoupons();
         }
 
-        document.getElementById("applyCoupon").addEventListener("click", async () => {
+        let applyCouponText = document.getElementById("applyCoupon").addEventListener("click", async () => {
             
             const couponCode = document.getElementById("couponCode").value.trim();
             const errorMessage = document.getElementById("errorMessage");
@@ -606,10 +604,14 @@
                     discount.innerText = `${data.discountAmount}`;
                     totalElement.innerHTML = data.newTotal;
                     totalAmountInput.value = data.newTotal;
-                    document.getElementById("cancelCoupon").style.display = "inline-block";
+                    document.getElementById("cancelCoupon").style.display = "inline-block";                    
+                    document.getElementById("applyCoupon").style.display = 'none'
+              
+
 
                     totalElement.innerHTML = data.newTotal;
                     totalAmountInput.value = data.newTotal;
+
 
                     document.querySelectorAll(".summary-item").forEach((item) => {
 
@@ -642,33 +644,59 @@
                     errorMessage.style.display = "block";
                     discountInfo.style.display = "none";
                 }
-            } catch (error) {
-                console.log(error)
-                errorMessage.innerHTML = `✅ Coupon Applied! Discount: ₹${data.discountAmount} <br> <strong>New Total: ₹${data.newTotal}</strong>`;
+            } catch (error) {        
+                   
+                console.log(error);
+                errorMessage.textContent = "Something went wrong while applying the coupon.";
                 errorMessage.style.display = "block";
                 discountInfo.style.display = "none";
             }
         });
 
+        
+
+
+
+        
+        // Cancel Coupon
+
         document.getElementById("cancelCoupon").addEventListener("click", () => {
+
+                    
+        const couponCode = document.getElementById("couponCode").value.trim();
+        if (couponCode) {
+            fetch("/cancelCoupon", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ couponCode })
+            }).then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Coupon cancelled on server");
+                } else {
+                    console.warn("Coupon cancel failed on server:", data.message);
+                }
+            }).catch(error => {
+                console.error("Error contacting backend to cancel coupon:", error);
+            });
+        }
+
             document.getElementById("discountInfo").style.display = "none";
             document.getElementById("errorMessage").style.display = "none";
-            document.getElementById("discount").innerText = "0.00";
+            
+            let discountText = document.getElementById("discount")            
+            let discountVal = parseFloat(discountText.textContent)
+            discountText.innerHTML = "0.00"
 
-            document.getElementById("subtotal").innerText = originalSubtotal.toFixed(2);
-            document.getElementById("shipping").innerText = originalShipping.toFixed(2);
-            document.getElementById("total").innerText = originalTotal.toFixed(2);
-            document.getElementById("totalAmountInput").value = originalTotal;
+            let totalText = document.getElementById("total")
+            let totalAfterRemoveCoupon = parseFloat( totalText.textContent )
 
-            document.querySelectorAll(".summary-item").forEach((item) => {
-                const productPriceEl = item.querySelector(".original-price");
-                const discountedPriceEl = item.querySelector(".discounted-price");
-                productPriceEl.style.textDecoration = "none";
-                productPriceEl.style.color = "inherit";
-                discountedPriceEl.style.display = "none";
-            });
+            totalAfterRemoveCoupon += discountVal
+            totalText.innerText = totalAfterRemoveCoupon;
+
 
             document.getElementById("cancelCoupon").style.display = "none";
+            document.getElementById("applyCoupon").style.display = "inline-block";
 
             let couponInput = document.getElementById("couponCode");
             couponInput.value = ""; 

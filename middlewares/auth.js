@@ -12,8 +12,8 @@ const userAuth = (req, res, next) => {
           console.log('User  is blocked or not found, redirecting to login');
 
           // New Code
-          req.session.user = null 
-                   
+          req.session.user = null
+
           res.redirect('/login');
         }
       })
@@ -26,6 +26,34 @@ const userAuth = (req, res, next) => {
     res.redirect('/login');
   }
 };
+
+const testAuth = (req, res, next) => {
+  
+  if (req.session.user) {
+    User.findById(req.session.user)
+      .then(data => {
+        if (data && !data.isBlocked) {
+          next();
+        } else {
+          console.log('User  is blocked or not found, redirecting to login');
+
+          // New Code
+          req.session.user = null
+
+          res.redirect('/login');
+        }
+      })
+      .catch(error => {
+        console.log('Error in user auth middleware', error);
+        res.status(500).redirect('/pageNotFound');
+      });
+  } else {
+    console.log('No user session, redirecting to login');
+    res.redirect('/login');
+  }
+};
+
+
 
 const userAuthCheck = (req, res, next) => {
   // console.log('User  session:', req.session.user);
@@ -63,5 +91,6 @@ module.exports = {
   userAuth,
   adminAuth,
   userAuthCheck,
-  adminAuthCheck
+  adminAuthCheck,
+  testAuth
 }

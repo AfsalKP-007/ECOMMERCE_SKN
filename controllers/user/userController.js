@@ -469,27 +469,6 @@ const logout = async (req, res) => {
     }
 };
 
-// const logout = async (req, res) => {
-//     try {
-
-//         console.log( " CALLED LOGOUT" )
-//         req.session.destroy((err) => {
-//             if (err) {
-//                 console.log("Session destruction error:", err);
-//                 return res.redirect("/pageNotFound");
-//             }
-//             return res.redirect("/login");
-//         });
-//     } catch (error) {
-//         console.log("Logout error:", error);
-//         res.redirect("/pageNotFound");
-//     }
-// };
-
-
-
-
-
 module.exports = {
     loadHomePage,
     pageNotFound,
