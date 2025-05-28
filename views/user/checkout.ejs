@@ -375,7 +375,7 @@
                 <br>
 
 
-                <div class="summary-item" style="display: none;">
+                <div class="summary-item" >
                     <span style="color: #000;">Delivery Charge:</span>
                     <span>₹<span id="shipping" name="shipping" style="color: #000;">
                             <%= deliveryCharge %>.00
@@ -654,10 +654,6 @@
         });
 
         
-
-
-
-        
         // Cancel Coupon
 
         document.getElementById("cancelCoupon").addEventListener("click", () => {
@@ -703,8 +699,6 @@
             couponInput.setAttribute("value", "");
             couponInput.dispatchEvent(new Event("change")); 
             couponInput.blur();
-
-            console.log("Coupon canceled, input fully cleared!");
         });
 
 
@@ -725,8 +719,6 @@
             const existingAddressInputs = this.querySelectorAll('input[name="address"]');
             existingCouponInputs.forEach((input) => input.remove());
             existingAddressInputs.forEach((input) => input.remove());
-
-
 
             if (selectedPaymentMethod === "razorpay") {
                 try {

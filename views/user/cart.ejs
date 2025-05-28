@@ -523,13 +523,21 @@
         <span>Subtotal:</span>
         <span id="subtotal">₹<%= subtotal %></span>
       </div>
+
+       <div class="summary-item">
+        <span>Delivery Charge:</span>
+        <span id="deliveryCharge">₹<%= deliveryCharge %></span>
+      </div>
         
       <div class="summary-item">
         <span>Discount:</span>
         <span id="subTotalDiscount">₹<%= totalPriceAfterDiscount %></span>
       </div>
-      <div class="summary-item total">
-        <span>Total:</span>
+
+    
+
+      <div class="summary-item">
+        <span>Total amount:</span>
         <span id="total">₹<%= total %></span>
       </div>
 
@@ -680,18 +688,24 @@ document.querySelectorAll('.remove-item').forEach(el => {
         const price = parseFloat(item.querySelector('.item-price').textContent.replace('₹', ''));
         const quantity = parseInt(item.querySelector('.stock-input').value);
         const discountPrice = parseFloat(item.querySelector('.discount-price').textContent.replace('₹', ''));
-
+        
         subtotal += price * quantity;
         totalDiscountPrice += quantity * discountPrice
         
       });
 
 
-      
-      const totalDiscount = ( subtotal -  totalDiscountPrice )
-      const grandTotal = subtotal - totalDiscount
+      // Attaching Delivery Charge ----------
+      let deliveryCharge = totalDiscountPrice <= 2000 ? 50 : 0;
+      document.getElementById('deliveryCharge').textContent = '₹' + deliveryCharge;
+      //----------
 
       
+      
+      const totalDiscount = ( subtotal -  totalDiscountPrice )
+      const deliveryAmount = parseFloat(document.getElementById('deliveryCharge').textContent.replace('₹', ''));
+
+      const grandTotal = (subtotal + deliveryAmount) - totalDiscount
 
       document.getElementById('subtotal').textContent = subtotal.toFixed(2);
       document.getElementById('subTotalDiscount').textContent = totalDiscount.toFixed(2);

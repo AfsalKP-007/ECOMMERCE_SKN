@@ -1,4 +1,5 @@
 const express = require("express");
+const morgan = require('morgan');
 const app = express();
 const nocache = require('nocache')
 const env = require("dotenv").config();
@@ -14,6 +15,9 @@ const MongoStore = require('connect-mongo');
 const path = require("path")
 
 connectDB();
+
+// Use morgan middleware
+// app.use(morgan('dev')); // 'dev' is a pre-defined format
 
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));

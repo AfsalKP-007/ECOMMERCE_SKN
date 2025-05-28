@@ -121,7 +121,6 @@ router.patch('/updateCartQuantity', userAuth, cartController.updateCartQuantity)
 
 // CHECKOUT
 router.get('/checkout', userAuth, cartController.loadCheckOut)
-// router.get('/checkout/coupon',userAuth,cartController.loadCheckOutCoupon)
 
 
 // COUPON

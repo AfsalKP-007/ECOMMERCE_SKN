@@ -132,9 +132,9 @@ const loadCart = async (req, res) => {
     const totalPriceAfterDiscount = subtotal - subTotalPriceAfterDiscount
 
     let shipping = 0
-    let deliveryCharge = 0;
+    let deliveryCharge = subTotalPriceAfterDiscount <= 2000 ? 50 : 0;
 
-    const total = (subtotal + shipping + deliveryCharge) - totalPriceAfterDiscount
+    let total = (subtotal + shipping + deliveryCharge) - totalPriceAfterDiscount
 
     res.render('cart', {
       cartItems: filteredCartItems,
@@ -176,9 +176,8 @@ const removeCartItem = async (req, res) => {
 }
 
 const updateCartQuantity = async (req, res) => {
+
   try {
-
-
     const userId = req.session.user
     const { productId, newQuantity } = req.body
     if (!userId) {
@@ -271,7 +270,9 @@ const loadCheckOut = async (req, res) => {
 
 
     let shipping = 0
-    let deliveryCharge = 0
+
+
+    let deliveryCharge = subTotalPriceAfterDiscount <= 2000 ? 50 : 0;
 
     const total = (subTotal + shipping + deliveryCharge) - totalPriceAfterDiscount
 
