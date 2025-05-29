@@ -29,6 +29,12 @@ const addProducts = async (req, res) => {
       return res.status(400).json({ success: false, message: "All required fields must be provided." });
     }
 
+    // Check if productOffer is greater than 50
+    if (productOffer > 50) {
+      return res.status(400).json({ success: false, message: "Offer cannot be greater than 50%. " });
+    }
+
+
     // Check if product with the same name already exists
     const productExists = await Product.findOne({ name });
     if (productExists) {
@@ -389,8 +395,6 @@ const editProduct = async (req, res) => {
     } = req.body
 
 
-    console.log(productOffer)
-
     const existingProduct = await Product.findOne({
       name: name,
       _id: { $ne: id },
@@ -400,6 +404,12 @@ const editProduct = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "Product with this name already exists. Please try another name." })
+    }
+
+
+    // Check if productOffer is greater than 50
+    if (productOffer > 50) {
+      return res.status(400).json({ success: false, message: "Offer cannot be greater than 50%. " });
     }
 
     const updateFields = {
