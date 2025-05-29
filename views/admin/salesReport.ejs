@@ -187,6 +187,7 @@
           <th>Offer</th>
           <th>Coupon Discount</th>
           <th>Coupon Code</th>
+          <th>Delivery Charge</th>
           <th>Final Price</th>
           <th>Payment Method</th>
           <th>Status</th>
@@ -201,6 +202,7 @@
       <p><strong>Total Order Amount:</strong> <span id="orderAmount">0.00</span></p>     
       <p><strong>Total Offer:</strong> <span id="offerAmount">0.00</span></p>
       <p><strong>Total Discount:</strong> <span id="discountAmount">0.00</span></p>
+      
 
     </div>
 
@@ -330,6 +332,7 @@ function displayReport(orders, summary) {
                 <td>${ Math.round( order.productOrCategoryOfferAmount ) }</td>
                 <td>${ Math.round( order.discount ) }</td>
                 <td>${order.couponCode || "N/A"}</td>
+                <td>${ Math.round( order.deliveryCharge ) }</td>
                 <td>${ Math.round( order.finalAmount ) }</td>
                 <td>${order.paymentMethod || "N/A"}</td>
                 <td>${order.status || "N/A"}</td>
@@ -372,14 +375,14 @@ function displayReport(orders, summary) {
 
       doc.autoTable({
         startY: 30,
-        head: [['Order ID', 'Date', 'Product', 'Qty', 'Price', 'Total Price', 'Offer', 'Discount', 'Coupon Code', 'Final Amount', 'Payment Method', 'Status']],
+        head: [['Order ID', 'Date', 'Product', 'Qty', 'Price', 'Total Price', 'Offer', 'Discount', 'Coupon Code', 'Delivery Charge', 'Final Amount', 'Payment Method', 'Status']],
         body: Array.from(document.getElementById("reportTableBody").children).map(row => {
 
           return Array.from(row.children).map(cell => {            
                 return cell.textContent
           });
         }),
-        styles: { fontSize: 10, cellPadding: 1 },
+        styles: { fontSize: 7, cellPadding: 1 },
         headStyles: { fillColor: [52, 152, 219], textColor: 255 },
         margin: { left: 20, right: 20 },
       });
@@ -406,26 +409,62 @@ function displayReport(orders, summary) {
       doc.save("Sales_Report.pdf");
     }
 
-    function downloadExcel() {
-      const table = document.getElementById("salesReportTable");
-      const summary = document.getElementById("reportSummary");
-      const wb = XLSX.utils.book_new();
+  function downloadExcel() {
+  const table = document.getElementById("salesReportTable");
+  const wb = XLSX.utils.book_new();
 
-      const tableData = XLSX.utils.table_to_sheet(table);
+  // Convert HTML table to worksheet
+  const tableData = XLSX.utils.table_to_sheet(table);
 
-      const summaryData = [
-        ["Summary", ""],
-        ["Overall Sales Count", document.getElementById("salesCount").textContent],
-        ["Overall Order Amount", `${document.getElementById("orderAmount").textContent}`],
-        ["Overall Discount", `${document.getElementById("discountAmount").textContent}`],
-      ];
-      const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+  // Set column widths for the table sheet
+  tableData['!cols'] = [
+   
+    { wch: 25 }, 
+    { wch: 25 }, 
+    { wch: 25 }, 
+    { wch: 10 }, 
+    { wch: 10 }, 
+    { wch: 10 }, 
+    { wch: 10 }, 
+    { wch: 10 }, 
+    { wch: 10 }, 
+    { wch: 10 }, 
+    { wch: 25 }
+  ];
 
-      XLSX.utils.book_append_sheet(wb, tableData, "Sales Report");
-      XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
+  // Prepare summary data
+  const summaryData = [
+    ["Summary", ""],
+    ["Overall Sales Count", document.getElementById("salesCount").textContent],
+    ["Overall Order Amount", document.getElementById("orderAmount").textContent],
+    ["Overall Discount", document.getElementById("discountAmount").textContent],
+  ];
 
-      XLSX.writeFile(wb, "Sales_Report.xlsx");
-    }
+  // Convert summary array to sheet
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+
+  // Set column widths for the summary sheet
+  summarySheet['!cols'] = [
+    { wch: 25 }, // Column A width
+    { wch: 25 }, 
+
+  ];
+
+
+  let start_date = document.getElementById("startDate").value;
+  let end_date = document.getElementById("endDate").value 
+
+
+  const fileName = `Sales_Report_${start_date}--${end_date}.xlsx`
+
+  // Append both sheets to workbook
+  XLSX.utils.book_append_sheet(wb, tableData, "Sales Report");
+  XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
+
+  // Export file
+  XLSX.writeFile(wb, fileName );
+}
+
 
   </script>
 

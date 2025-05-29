@@ -101,18 +101,21 @@
 
           <p><strong>Product:</strong> <%= order.product.name %> </p>
           <p><strong>Qty:</strong> <%= order.qty %> </p>
-          <p><strong>Price:</strong> ₹<%= order.price.toFixed(2) %> </p>
-          <p><strong>Total Price:</strong> ₹<%=  Math.round(order.totalPrice) %> </p>
+          <p><strong>Price:</strong> ₹<%= parseFloat( order.price ).toFixed(2) %> </p>
+          <p><strong>Total Price:</strong> ₹<%=  parseFloat(order.totalPrice).toFixed(2)  %> </p>
         
           <% if (order.discount> 0) { %>
-            <p><strong>Discount:</strong> ₹<%= Math.round(order.discount) %> </p>
+            <p><strong>Discount:</strong> ₹<%= parseFloat(order.discount).toFixed(2) %> </p>
          <% } %>
 
+
          <% if (order.productOrCategoryOfferAmount> 0) { %>
-          <p><strong>Offer:</strong> ₹<%= Math.round(order.productOrCategoryOfferAmount) %> </p>
+          <p><strong>Offer:</strong> ₹<%= parseFloat(order.productOrCategoryOfferAmount).toFixed(2) %> </p>
        <% } %>
 
-            <h3><strong>Final Price:</strong> ₹<%= Math.round(order.finalAmount) %> </h3>
+          <p><strong>Delivery Charge:</strong> ₹<%=  parseFloat(order.deliveryCharge).toFixed(2) %> </p>
+
+            <h3><strong>Final Price:</strong> ₹<%= parseFloat(order.finalAmount).toFixed(2) %> </h3>
              
             <p><strong>Order status:</strong> <%= order.status %> </p>
 
@@ -194,14 +197,14 @@
             name: <%- JSON.stringify(order.product.name) %>,
             createdOn: <%- JSON.stringify(order.createdOn) %>,
             qty: <%= order.qty %>,
-            price: <%= order.price.toFixed(2) %>,
+            price: <%= parseFloat(order.price).toFixed(2) %>,
 
-            totalPrice: <%= Math.round(order.totalPrice) %>,
-            deliveryCharge: <%= Math.round(order.deliveryCharge) %>,
+            totalPrice: <%= parseFloat(order.totalPrice).toFixed(2) %>,
+            deliveryCharge: <%= parseFloat(order.deliveryCharge).toFixed(2) %>,
 
-            offer: <%= Math.round(order.productOrCategoryOfferAmount) || 0 %>,
-            discount: <%= Math.round(order.discount) || 0 %>,
-            finalAmount: <%= Math.round(order.finalAmount) %>,
+            offer: <%= parseFloat(order.productOrCategoryOfferAmount).toFixed(2) || 0 %>,
+            discount: <%= parseFloat(order.discount).toFixed(2) || 0 %>,
+            finalAmount: <%= parseFloat(order.finalAmount).toFixed(2) %>,
 
             imageUrl: <%- JSON.stringify(baseUrl + "/" + (Array.isArray(order.product.photos) ? order.product.photos[0] : order.product.photos)) %>,
             address: {

@@ -70,6 +70,25 @@ const addOrder = async (req, res) => {
       }
     }
 
+
+
+    // Making Summary---
+
+    let grandTotalAmount = cart.items.reduce((acc, item) => {
+      acc += item.totalPrice
+      return acc
+    }, 0)
+
+    let subTotalPriceAfterDiscount = cart.items.reduce((acc, item) => {
+      acc += item.priceAfterDiscount
+      return acc
+    }, 0)
+
+    const delivery_Charge = subTotalPriceAfterDiscount <= 2000 ? 50 : 0;  // For ALL item
+    const totalItmesCount = cart.items.length
+
+    console.log("Deivery Charge", delivery_Charge) //
+
     let orders = []
 
     for (const item of cart.items) {
@@ -79,12 +98,13 @@ const addOrder = async (req, res) => {
       )
       const itemDiscount = discountDetail ? discountDetail.discount : 0
 
-      const delivery_Charge = 0
+      let finalDeliveryChargeForAnItem = delivery_Charge > 0 ? ( delivery_Charge / totalItmesCount ) : 0 // Delivery Charge Distributing from here.
+
       const productOrCategoryOfferAmount = item.totalPrice - item.priceAfterDiscount;
 
       const totalPrice = Number(item.totalPrice || 0) + Number(item.deliveryCharge || 0)
 
-      const finalItemAmount = Number(item.totalPrice || 0) + Number(item.deliveryCharge || 0) - Number(itemDiscount || 0) - Number(productOrCategoryOfferAmount || 0);
+      const finalItemAmount = Number(item.totalPrice || 0) + Number(finalDeliveryChargeForAnItem || 0) - Number(itemDiscount || 0) - Number(productOrCategoryOfferAmount || 0);
 
       const newOrder = new Order({
         userId: userId,
@@ -92,7 +112,7 @@ const addOrder = async (req, res) => {
         price: item.productId.salePrice,
         qty: item.qty,
         totalPrice: totalPrice,
-        deliveryCharge: delivery_Charge,
+        deliveryCharge: finalDeliveryChargeForAnItem,  
         discount: itemDiscount,
         discountAmount: itemDiscount,
         finalAmount: finalItemAmount,

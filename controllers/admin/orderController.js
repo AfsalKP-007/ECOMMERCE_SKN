@@ -138,9 +138,6 @@ const updateStatus = async (req, res) => {
   try {
     const { orderId, status } = req.body
 
-    console.log(orderId, status, ' ///////////////// ')
-
-
     const order = await Order.findById(orderId)
     if (!order) {
       return res.json({ success: false, message: `Can't find the order` })

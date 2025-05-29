@@ -48,11 +48,15 @@
                               <% if (order.couponApplied === true) { %>
                                 <h6>Coupon Code: <%= order.couponCode %></h6>
                                 <h6>Coupon Amount: <%= (order.discountAmount).toFixed(2)  %></h6>
-                                <br>
                               <% } %>
 
                               <% if (order.productOrCategoryOfferAmount > 0) { %>
                                 <h6>Offer Discount: <%= order.productOrCategoryOfferAmount %></h6>
+                               
+                              <% } %>
+
+                             <% if (order.deliveryCharge > 0) { %>
+                                <h6>Delivery Charge: <%= order.deliveryCharge %></h6>
                                 <br>
                               <% } %>
 
@@ -68,15 +72,23 @@
                         <table class="min-w-full divide-y divide-amber-500/20">
                             <thead class="bg-gray-700" style="background-color: #ADD6FF;">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider" style="width: 50%; "  >Product</th>
-                                    <th style="width: 50px;"></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider" style="width: 30%; "  >Product</th>
+                                  
+                                     <th style="width: 50px;"></th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Qty  </th>
-                                    <th style="width: 50px;"></th>
+                                     <th style="width: 50px;"></th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Price</th>
+                                     <th style="width: 50px;"></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Total</th>                                   
                                     <th style="width: 50px;"></th>
-                                    
-                             
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Total</th>
+
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Offer</th>
+                                    <th style="width: 50px;"></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Discount</th>
+                                    <th style="width: 50px;"></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Delivery Charge</th>
+                                    <th style="width: 50px;"></th>
+                                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Final Amount</th>
                                     <th style="width: 50px;"></th>
                                     <%if(order.status=='Cancelled' || order.status=='Delivered' ){%>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">Details</th>
@@ -95,7 +107,6 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                                         <img style="width: 100; height: 100px;" src="/<%= Array.isArray(order.product.photos) ? order.product.photos[0] : order.product.photos %>" >
                                         <%= order.product.name %>
-
                                     </td>
                                     <td style="width: 50px;"></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
@@ -103,13 +114,34 @@
                                     </td>
                                     <td style="width: 50px;"></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                                        ₹<%= order.product.salePrice.toFixed(2) %>
+                                        ₹<%= parseFloat(order.price).toFixed(2) %>
                                     </td>
                                     <td style="width: 50px;"></td>
                                  
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                                        ₹<%= (order.totalPrice).toFixed(2) %>
+                                        ₹<%= parseFloat(order.totalPrice).toFixed(2) %>
                                     </td>
+
+                                   <td style="width: 50px;"></td>                                 
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        ₹<%= parseFloat(order.productOrCategoryOfferAmount).toFixed(2) %>
+                                    </td>
+
+                                      <td style="width: 50px;"></td>                                 
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        ₹<%= parseFloat(order.discountAmount).toFixed(2) %>
+                                    </td>
+                                    
+                                      <td style="width: 50px;"></td>                                 
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        ₹<%= parseFloat(order.deliveryCharge).toFixed(2) %>
+                                    </td>
+
+                                    <td style="width: 50px;"></td>                                 
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        ₹<%= parseFloat(order.finalAmount).toFixed(2) %>
+                                    </td>
+
                                     <td style="width: 50px;"></td>
                                     <%if(order.status=='Cancelled' || order.status=='Delivered' ){%>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">

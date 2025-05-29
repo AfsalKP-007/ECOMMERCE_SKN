@@ -98,8 +98,9 @@
                             <th>Price</th>                       
                             <th>Total Price</th>
                             <th>Offer</th>  
-                            <th>Coupon Discount</th>  
-                            <th>Final Amount</th>  
+                            <th>Coupon <br> Discount</th>  
+                            <th>Delivery <br> Charge</th> 
+                            <th>Final <br> Amount</th>  
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -128,6 +129,7 @@
                                 <td style="font-size: 18px;"><%= Math.round(order.totalPrice) %></td>
                                 <td style="font-size: 18px;"><%= Math.round(order.productOrCategoryOfferAmount) %></td>
                                 <td style="font-size: 18px;"><%= Math.round(order.discountAmount) %></td>
+                                 <td style="font-size: 18px;"><%= Math.round(order.deliveryCharge) %></td>
                                 <td style="font-size: 18px;">₹<%= Math.round(order.finalAmount) %></td>
                                 <td>
 
