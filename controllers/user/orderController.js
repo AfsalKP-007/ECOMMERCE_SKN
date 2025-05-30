@@ -87,7 +87,6 @@ const addOrder = async (req, res) => {
     const delivery_Charge = subTotalPriceAfterDiscount <= 2000 ? 50 : 0;  // For ALL item
     const totalItmesCount = cart.items.length
 
-    console.log("Deivery Charge", delivery_Charge) //
 
     let orders = []
 
@@ -105,6 +104,7 @@ const addOrder = async (req, res) => {
       const totalPrice = Number(item.totalPrice || 0) + Number(item.deliveryCharge || 0)
 
       const finalItemAmount = Number(item.totalPrice || 0) + Number(finalDeliveryChargeForAnItem || 0) - Number(itemDiscount || 0) - Number(productOrCategoryOfferAmount || 0);
+
 
       const newOrder = new Order({
         userId: userId,
