@@ -84,4 +84,8 @@ router.get('/salesReport',adminAuth,orderController.loadSalesReport)
 router.post('/salesReport',orderController.generateSalesReport)
 
 
+router.get("/api/top-selling", adminAuth, adminController.getTopSelling)
+router.get("/api/sales-data", adminAuth, adminController.getSalesData)
+
+
 module.exports = router;

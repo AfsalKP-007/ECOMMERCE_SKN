@@ -189,7 +189,7 @@ button:active {
     
     <!-- Top Selling Products and Recent Orders -->
     <div class="row">
-        <div class="col-lg-8 mb-3">
+        <div class="col-lg-6 mb-3">
             <div class="card card-custom p-3">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     
@@ -227,8 +227,12 @@ button:active {
                                 <% dashboardData.topProducts.forEach(product => { %>
                                     <tr>
                                         <td class="d-flex align-items-center">
-                                            <img src="<%= product.image || 'https://via.placeholder.com/40' %>" alt="<%= product.name %>" class="mr-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-                                            <span><%= product.name %></span>
+
+                    <img src="<%= product.image ? product.image : 'https://via.placeholder.com/40' %>" alt="<%= product.name %>" 
+                    class="mr-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
+                    >
+
+                <span><%= product.name %></span>
                                         </td>
                                         <td><%= product.category %></td>
                                         <td>₹<%= product.price.toLocaleString() %></td>
@@ -245,7 +249,7 @@ button:active {
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mb-3">
+        <div class="col-lg-6 mb-3">
             <div class="card card-custom p-3">
                 <h5 class="font-weight-bold mb-4">Recent Orders</h5>
                 <div class="table-responsive">
@@ -297,17 +301,42 @@ button:active {
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
+
+
+
+
     // Sales Chart
     const salesCtx = document.getElementById('salesChart').getContext('2d');
-    const salesData = <%- JSON.stringify(dashboardData.salesData) %>;
-    const salesLabels = <%- JSON.stringify(dashboardData.salesLabels) %>;
+    let salesData = <%- JSON.stringify(dashboardData.salesData) %>;
+    let salesLabels = <%- JSON.stringify(dashboardData.salesLabels) %>;
     
-    const salesChart = new Chart(salesCtx, {
+    let totalValue = salesData.reduce((acc, value) => acc + value)
+
+
+    let salesChart
+    let orderStatusChart
+
+    function loadCharts(){    
+
+        salesData = <%- JSON.stringify(dashboardData.salesData) %>
+        salesLabels = <%- JSON.stringify(dashboardData.salesLabels) %>;
+        totalValue = salesData.reduce((acc, value) => acc + value)
+
+    if(salesChart) 
+        salesChart.destroy();    
+
+    if(orderStatusChart)
+       orderStatusChart.destroy()
+
+
+     salesChart = new Chart(salesCtx, {
+       
         type: 'line',
         data: {
             labels: salesLabels,
+            
             datasets: [{
-                label: 'Sales (₹)',
+                label:  `Sales ${ parseFloat(totalValue).toFixed(2)} ` ,
                 data: salesData,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -346,18 +375,21 @@ button:active {
     const orderStatusData = <%- JSON.stringify(dashboardData.orderStatusData) %>;
     const orderStatusLabels = <%- JSON.stringify(dashboardData.orderStatusLabels) %>;
     
-    const orderStatusChart = new Chart(statusCtx, {
+     orderStatusChart = new Chart(statusCtx, {
         type: 'doughnut',
         data: {
             labels: orderStatusLabels,
             datasets: [{
                 data: orderStatusData,
                 backgroundColor: [
-                    'rgba(46, 204, 113, 0.7)',
-                    'rgba(52, 152, 219, 0.7)',
-                    'rgba(231, 76, 60, 0.7)',
-                    'rgba(241, 196, 15, 0.7)',
-                    'rgba(155, 89, 182, 0.7)'
+                    'rgba(44, 222, 133)',       // Delivered
+                    'rgba(33, 163, 241)',       // Pending
+                    'rgba(0, 0, 255)',          // Confirmed
+                    'rgba(255, 165, 0)',        // Shipped
+                    'rgba(255, 192, 203)',      // Cancelled
+                    'rgba(248, 213, 0)',        // Return_Request
+                    'rgba(230, 82, 86)'         // Return
+
                 ],
                 borderColor: [
                     'rgba(46, 204, 113, 1)',
@@ -380,8 +412,13 @@ button:active {
         }
     });
 
+
+}
+
     // Update Sales Chart based on time period
-    function updateSalesChart(period) {
+function updateSalesChart(period) {
+
+
     // Highlight the active button
     document.getElementById('weeklyBtn').classList.remove('btn-primary');
     document.getElementById('weeklyBtn').classList.add('btn-outline-primary');
@@ -403,6 +440,7 @@ button:active {
             return response.json();
         })
         .then(data => {
+
             salesChart.data.labels = data.labels;
             salesChart.data.datasets[0].data = data.data;
             salesChart.update();
@@ -411,6 +449,9 @@ button:active {
             console.error('Error fetching sales data:', error);
             alert('Failed to update chart. Please try again.');
         });
+
+        
+    loadCharts()
 }
 
 // Initialize with active button styling
@@ -421,9 +462,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set the monthly button as active by default
     document.getElementById('monthlyBtn').classList.remove('btn-outline-primary');
     document.getElementById('monthlyBtn').classList.add('btn-primary');
+
+    loadCharts()
 });
     // Update Top Selling Products/Categories based on filter
     function updateTopSellingProducts(filter) {
+
+        console.log( filter )
         let url = `/admin/api/top-selling?type=${filter}`;
         
         // Update table header based on selection
