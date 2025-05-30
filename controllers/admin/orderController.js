@@ -198,23 +198,26 @@ const orderReturn = async (req, res) => {
 
       await product.save()
 
+
+      let totalReturnAmount = orderData.finalAmount - (orderData.discountAmount + orderData.deliveryCharge + orderData.productOrCategoryOfferAmount)
+
       var wallet = await Wallet.findOne({ userId: userId })
 
       if (!wallet) {
         wallet = new Wallet({
           userId,
-          balance: orderData.finalAmount,
+          balance: totalReturnAmount,
           transactions: [
-            { type: 'credit', amount: orderData.finalAmount, description: `Refund of ${orderId}` },
+            { type: 'credit', amount: totalReturnAmount, description: `Refund of ${orderId} Order Return.` },
           ],
           date: new Date(),
         })
       } else {
-        wallet.balance += orderData.finalAmount
+        wallet.balance += totalReturnAmount
         wallet.transactions.push({
           type: 'credit',
-          amount: orderData.finalAmount,
-          description: `Refund of ${orderId}`,
+          amount: totalReturnAmount,
+          description: `Refund of ${orderId} Order Return.`,
           date: new Date(),
         })
       }
@@ -222,14 +225,14 @@ const orderReturn = async (req, res) => {
 
       await Transaction.create({
         userId: userId,
-        amount: orderData.finalAmount,
+        amount: totalReturnAmount,
         transactionType: "credit",
         paymentMethod: "refund",
         paymentGateway: "razorpay",
         status: "completed",
         purpose: "refund",
-        description: `Payment refund for order ${orderId}`,
-        orders: [{ orderId: orderData._id, amount: orderData.finalAmount }],
+        description: `Payment refund for order ${orderId} Order Return.`,
+        orders: [{ orderId: orderData._id, amount: totalReturnAmount }],
         walletBalanceAfter: wallet.balance
       });
 

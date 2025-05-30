@@ -28,7 +28,6 @@ const userAuth = (req, res, next) => {
 };
 
 const testAuth = (req, res, next) => {
-  
   if (req.session.user) {
     User.findById(req.session.user)
       .then(data => {

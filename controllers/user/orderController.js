@@ -98,7 +98,7 @@ const addOrder = async (req, res) => {
       )
       const itemDiscount = discountDetail ? discountDetail.discount : 0
 
-      let finalDeliveryChargeForAnItem = delivery_Charge > 0 ? ( delivery_Charge / totalItmesCount ) : 0 // Delivery Charge Distributing from here.
+      let finalDeliveryChargeForAnItem = delivery_Charge > 0 ? (delivery_Charge / totalItmesCount) : 0 // Delivery Charge Distributing from here.
 
       const productOrCategoryOfferAmount = item.totalPrice - item.priceAfterDiscount;
 
@@ -112,7 +112,7 @@ const addOrder = async (req, res) => {
         price: item.productId.salePrice,
         qty: item.qty,
         totalPrice: totalPrice,
-        deliveryCharge: finalDeliveryChargeForAnItem,  
+        deliveryCharge: finalDeliveryChargeForAnItem,
         discount: itemDiscount,
         discountAmount: itemDiscount,
         finalAmount: finalItemAmount,
@@ -268,45 +268,48 @@ const cancelOrder = async (req, res) => {
     product.stock += orderData.qty;
     await product.save();
 
-    if (orderData.paymentMethod !== "cod") {
-      let wallet = await Wallet.findOne({ userId });
-      if (!wallet) {
-        wallet = new Wallet({
-          userId,
-          balance: orderData.finalAmount,
-          transactions: [
-            {
-              type: "credit",
-              amount: orderData.finalAmount,
-              description: `Refund for order ${orderId}`,
-              date: new Date(),
-            },
-          ],
-        });
-      } else {
-        wallet.balance += orderData.finalAmount;
-        wallet.transactions.push({
-          type: "credit",
-          amount: orderData.finalAmount,
-          description: `Refund for order ${orderId}`,
-          date: new Date(),
-        });
-      }
-      await wallet.save();
+    // if (orderData.paymentMethod !== "cod") {
 
-      await Transaction.create({
-        userId: userId,
-        amount: orderData.finalAmount,
-        transactionType: "credit",
-        paymentMethod: "refund",
-        paymentGateway: "razorpay",
-        status: "completed",
-        purpose: "refund",
-        description: `Payment refund for order ${orderId}`,
-        orders: [{ orderId: orderData._id, amount: orderData.finalAmount }],
-        walletBalanceAfter: wallet.balance
+    let totalReturnAmount = orderData.finalAmount - (orderData.discountAmount + orderData.productOrCategoryOfferAmount)
+
+    let wallet = await Wallet.findOne({ userId });
+    if (!wallet) {
+      wallet = new Wallet({
+        userId,
+        balance: totalReturnAmount,
+        transactions: [
+          {
+            type: "credit",
+            amount: totalReturnAmount,
+            description: `Refund for order ${orderId} cancellation`,
+            date: new Date(),
+          },
+        ],
+      });
+    } else {
+      wallet.balance += totalReturnAmount;
+      wallet.transactions.push({
+        type: "credit",
+        amount: totalReturnAmount,
+        description: `Refund for order ${orderId} cancellation`,
+        date: new Date(),
       });
     }
+    await wallet.save();
+
+    await Transaction.create({
+      userId: userId,
+      amount: orderData.finalAmount,
+      transactionType: "credit",
+      paymentMethod: "refund",
+      paymentGateway: "razorpay",
+      status: "completed",
+      purpose: "refund",
+      description: `Payment refund for order ${orderId} cancellation`,
+      orders: [{ orderId: orderData._id, amount: orderData.finalAmount }],
+      walletBalanceAfter: wallet.balance
+    });
+    // }
 
     orderData.status = "Cancelled";
     orderData.returnReason = reason;

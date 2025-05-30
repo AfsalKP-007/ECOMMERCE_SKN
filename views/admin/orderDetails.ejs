@@ -147,6 +147,17 @@
                             </table>
                         </div>
 
+
+                        <% if (order.status == "Returned") { %>
+                            <h6 style="color:red; margin-left: 10px;">₹<%= parseFloat(order.finalAmount) - (parseFloat(order.productOrCategoryOfferAmount) +  parseFloat(order.discountAmount) + parseFloat(order.deliveryCharge) ) %>  has been credited to user wallet. (Delivery charge excluded)</h6>
+                        <% } %>
+                        
+
+                        <% if (order.status == "Cancelled") { %>
+                            <h6 style="color:red; margin-left: 10px;">₹<%= parseFloat(order.finalAmount) - (parseFloat(order.productOrCategoryOfferAmount) +  parseFloat(order.discountAmount) ) %>  has been credited to user wallet. (Delivery charge included)</h6>
+                        <% } %>
+
+
                         <!-- Order Actions -->
                         <% if (order.status==="Return_Request" ) { %>
                             <div class="mb-4">

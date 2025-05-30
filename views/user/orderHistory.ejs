@@ -165,6 +165,18 @@
 
                     <br>
 
+        
+                <% if (order.status == "Returned") { %>
+                      <h6 style="color: blue; margin-left: 10px;">₹<%= parseFloat(order.finalAmount) - (parseFloat(order.productOrCategoryOfferAmount) +  parseFloat(order.discountAmount) + parseFloat(order.deliveryCharge)) %>  has been credited to your wallet.</h6>
+                <% } %>
+
+                <% if (order.status == "Cancelled") { %>
+                      <h6 style="color: blue; margin-left: 10px;">₹<%= parseFloat(order.finalAmount) - (parseFloat(order.productOrCategoryOfferAmount) +  parseFloat(order.discountAmount) ) %>  has been credited to your wallet.</h6>
+                <% } %>
+
+
+                <div style="width: 10px; height: 20px;"></div>
+
                 </div>
             <% }) %>
         </div>
