@@ -303,8 +303,15 @@
         </div>
 
         <!-- Payment Section -->
+
         <div class="form-section">
             <h3 class="form-title">Payment Method</h3>
+        
+        <% if (total >= 1000) { %>           
+            <h6 style="color: red;">Cash on Delivery available only for orders below ₹1000.</h6>
+            <br>
+
+        <% } %>
             <!-- <div class="payment-methods">
              
             <% if (total <= 1000) { %>
@@ -350,9 +357,13 @@
                     <span style="color: black;">Razorpay</span>
                 </label>
             </div>
+    </div>  
 
-</div>
 
+
+   
+
+  
 
         </div>
 
