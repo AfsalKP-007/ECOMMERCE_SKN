@@ -58,9 +58,6 @@ const getorderList = async (req, res) => {
         ).join('');
       });
 
-
-      console.log(normalizedStatus);
-
       // Check if any item contains "ReturnRequest"
       normalizedStatus = normalizedStatus.map(item => {
         if (item.includes("ReturnRequest")) {

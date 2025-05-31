@@ -193,11 +193,12 @@ button:active {
             <div class="card card-custom p-3">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     
-                    <h5 class="font-weight-bold" id="best-product-head">Top Selling Products & Categories</h5>
+                    <h5 class="font-weight-bold" id="best-product-head">Top Selling Products</h5>
                     <div>
                         <select class="form-control form-control-sm" id="productFilter" onchange="updateTopSellingProducts(this.value), ggggg(this.value)">
                             <option value="products">Products</option>
                             <option value="categories">Categories</option>
+                            <option value="brands">Brands</option>
                         </select>
                     </div>
                     <script>
@@ -205,7 +206,10 @@ button:active {
                             const title = document.getElementById("best-product-head");
                             if (value === "products") {
                                 title.innerText = "Top Selling Products";
-                            } else {
+                            } 
+                            else if( value === "brands") {
+                                title.innerText = "Top Selling Brands";
+                            }else {
                                 title.innerText = "Top Selling Categories";
                             }
                         }
@@ -472,20 +476,37 @@ document.addEventListener('DOMContentLoaded', function() {
         let url = `/admin/api/top-selling?type=${filter}`;
         
         // Update table header based on selection
+
         const tableHeader = document.getElementById('tableHeader');
+
+        // Categories ------------------------------
+
         if (filter === 'categories') {
             tableHeader.innerHTML = `
                 <th>Category</th>
                 <th>Products Count</th>
-                <th>Total Sales</th>
                 <th>Items Sold</th>
+                <th>Total Sales</th>
             `;
-        } else {
+
+        // Products ------------------------------
+
+        } else if( filter === 'products') {
             tableHeader.innerHTML = `
                 <th>Product</th>
                 <th>Category</th>
-                <th>Price</th>
                 <th>Sold</th>
+                <th>Price</th>
+            `;
+        }
+
+        // Brands ------------------------------
+        else  {
+            tableHeader.innerHTML = `
+                <th>Brand</th>
+                <th>Product Count</th>
+                <th>Sold </th>
+                <th>Total Sales</th>
             `;
         }
         
@@ -508,15 +529,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <tr>
                                     <td>${category.name}</td>
                                     <td>${category.productCount}</td>
-                                    <td>₹${ parseFloat(category.totalSales).toFixed(2)}</td>
                                     <td>${category.soldCount}</td>
+                                    <td>₹${ parseFloat(category.totalSales).toFixed(2)}</td>
                                 </tr>
                             `;
                         });
                     } else {
                         tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No categories found</td></tr>';
                     }
-                } else {
+                } else if( filter === 'products' ) {
                     // Render products
                     if (data.products && data.products.length > 0) {
                         data.products.forEach(product => {
@@ -527,8 +548,29 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <span>${product.name}</span>
                                     </td>
                                     <td>${product.category}</td>
-                                    <td>₹${ parseFloat(product.price).toFixed(2)}</td>
                                     <td>${product.soldCount}</td>
+                                    <td>₹${ parseFloat(product.price).toFixed(2)}</td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No Brands found</td></tr>';
+                    }
+                }
+
+                 else   {
+                    // Render Brands
+
+                    if (data.brands && data.brands.length > 0) {
+
+                        data.brands.forEach(product => {
+                            tableBody.innerHTML += `
+                                <tr>
+                               
+                                    <td>${product._id}</td>
+                                    <td>${ parseFloat(product.productCount) }</td>
+                                    <td>${product.soldCount}</td>
+                                    <td>₹${ parseFloat(product.totalSales).toFixed(2) }</td>
                                 </tr>
                             `;
                         });

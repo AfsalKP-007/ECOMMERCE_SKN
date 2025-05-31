@@ -308,34 +308,18 @@
             <h3 class="form-title">Payment Method</h3>
         
         <% if (total >= 1000) { %>           
-            <h6 style="color: red;">Cash on Delivery available only for orders below ₹1000.</h6>
-            <br>
-
+            <h6 style="color: rgb(255, 157, 0);">* Cash on Delivery available only for orders below ₹1000.</h6>
         <% } %>
-            <!-- <div class="payment-methods">
-             
-            <% if (total <= 1000) { %>
 
-                <div class="payment-card" data-method="cod">
-                    <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
-                        <input type="radio" name="paymentMethod" value="cod" style="cursor: pointer;"  <% if (total <= 1000) { %> checked <% } %> >
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span style="color: black;">Cash On Delivery</span>
-                    </label>
-                </div>
 
-              <% } %>
-        
+        <% if (walletBalance < total) { %>
+            <h6 style="color: rgb(255, 157, 0);">
+             * Wallet balance is ₹524 — insufficient to complete the payment.     
+           </h6>
+                <br>
+         <% } %>
 
-                <div class="payment-card" data-method="razorpay">
-                    <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
-                        <input type="radio" name="paymentMethod" value="razorpay" style="cursor: pointer;"  <% if (total <= 1000) { %> checked <% } %> >
-                        <i class="fas fa-wallet"></i>
-                        <span style="color: black;">Razorpay</span>
-                    </label>
-                </div>
-
-            </div> -->
+    
 
             <div class="payment-methods">
 
@@ -358,14 +342,21 @@
                 </label>
             </div>
 
-               <div class="payment-card" data-method="wallet">
-                <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
-                    <input type="radio" name="paymentMethod" value="wallet" style="cursor: pointer;" 
-                       
-                    <i class="fas fa-wallet"></i>
-                    <span style="color: black;">Wallet</span>
-                </label>
-            </div>
+
+
+            <% if (walletBalance > 0 && walletBalance >= total) { %>
+                <div class="payment-card" data-method="wallet">
+                    <label class="payment-method-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                        <input type="radio" name="paymentMethod" value="wallet" style="cursor: pointer;" />
+                        <i class="fas fa-wallet"></i>
+                        <span style="color: black;">Wallet</span>
+
+                        <span style="color: rgb(47, 93, 12); font-size: 22px;" class="wallet-balance"> ₹<%= parseFloat( walletBalance).toFixed(2) %></span>
+
+                    </label>
+                </div>
+            <% } %>
+
 
     </div>  
 
@@ -431,6 +422,14 @@
                         </span></span>
                 </div>
 
+
+                 <div class="summary-item">
+                    <span style="color: #000;">Offer Discount:</span>
+                    <span>-₹<span id="offer-discount" name="offerDiscount" style="color: #000;">
+                        <%= totalPriceAfterDiscount %>.00
+                        </span></span>
+                </div>
+
                 <div class="summary-item">
                     <span style="color: #000;">Coupon Discount:</span>
                     <span>-₹<span id="discount" name="discount" style="color: #000;">
@@ -438,13 +437,7 @@
                         </span></span>
                 </div>
 
-                <div class="summary-item">
-                    <span style="color: #000;">Offer Discount:</span>
-                    <span>-₹<span id="offer-discount" name="offerDiscount" style="color: #000;">
-                        <%= totalPriceAfterDiscount %>.00
-                        </span></span>
-                </div>
-
+           
      
                 <div class="summary-item total">
                     <span style="color: #000;">Total Amount:</span>
@@ -525,6 +518,9 @@
     
     
     <script>
+
+
+   const offerDiscount = parseFloat(document.getElementById("offer-discount").value || 0);
    
    const addressSelect = document.getElementById('address');
    const addressPreview = document.getElementById('addressPreview');
@@ -658,7 +654,7 @@
               
 
 
-                    totalElement.innerHTML = data.newTotal;
+                    totalElement.innerHTML =  parseFloat(data.newTotal).toFixed(2);
                     totalAmountInput.value = data.newTotal;
 
 
@@ -686,6 +682,7 @@
                             discountedPriceEl.textContent = `₹${discountDetail.discountedPrice.toFixed(2)}`;
                             discountedPriceEl.style.display = "inline";
                             discountedPriceEl.style.color = "var(--accent-gold)";
+
                         }
                     });
                 } else {
@@ -737,7 +734,7 @@
             let totalAfterRemoveCoupon = parseFloat( totalText.textContent )
 
             totalAfterRemoveCoupon += discountVal
-            totalText.innerText = totalAfterRemoveCoupon;
+            totalText.innerText = parseFloat( totalAfterRemoveCoupon ).toFixed(2) ;
 
 
             document.getElementById("cancelCoupon").style.display = "none";

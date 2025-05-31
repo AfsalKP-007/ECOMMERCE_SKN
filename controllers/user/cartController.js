@@ -1,6 +1,7 @@
 const User = require('../../models/userSchema')
 const Product = require('../../models/productSchema')
 const Cart = require('../../models/cartSchema')
+const Wallet = require('../../models/walletSchema')
 const Address = require('../../models/addressSchema')
 const Coupon = require('../../models/couponSchema')
 const Wishlist = require('../../models/wishlistSchema')
@@ -224,6 +225,10 @@ const loadCheckOut = async (req, res) => {
     const user = await User.findById(userId)
     const cart = await Cart.findOne({ userId }).populate('items.productId')
 
+    const wallet = await Wallet.findOne({ userId })
+    const walletBalance = wallet.balance
+
+
     const coupons = await Coupon.find({ expireOn: { $gt: new Date() } })
 
     if (!cart || cart.items.length === 0) {
@@ -270,8 +275,6 @@ const loadCheckOut = async (req, res) => {
 
 
     let shipping = 0
-
-
     let deliveryCharge = subTotalPriceAfterDiscount <= 2000 ? 50 : 0;
 
     const total = (subTotal + shipping + deliveryCharge) - totalPriceAfterDiscount
@@ -289,7 +292,8 @@ const loadCheckOut = async (req, res) => {
       total,
       totalPriceAfterDiscount,
       add,
-      coupons
+      coupons,
+      walletBalance
     })
   } catch (error) {
     console.error('Error occurred while loading checkout:', error)

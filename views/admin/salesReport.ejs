@@ -143,10 +143,14 @@
 
 
   <div class="sales-report-container">
-    <div style="color: black; margin-bottom: 20px;"">
+    <div style="color: black; margin-bottom: 10px;"">
       <h1>Sales Report</h1>
       <br>
     </div>
+
+    <div></div>
+
+
 
 
     <!-- Filter Section -->
@@ -163,12 +167,35 @@
   </div>
 
 
+
+
   <!-- Quick Date Buttons -->
   <div class="quick-buttons">
     <button onclick="setToday()">Today</button>
     <button onclick="setThisWeek()">This Week</button>
     <button onclick="setThisYear()">This Year</button>
   </div>
+
+
+  
+  <div style="font-size: 20px; color: black; margin-left: 50px;">
+  <label style="margin-right: 20px;">
+    <input type="checkbox" id="all" name="paymentMethod" value="all" checked>
+    All
+  </label>
+  <label style="margin-right: 20px;">
+    <input type="checkbox" class="individual" name="paymentMethod" value="wallet">
+    Wallet
+  </label>
+  <label style="margin-right: 20px;">
+    <input type="checkbox" class="individual" name="paymentMethod" value="cod">
+    CashOnDelivery
+  </label>
+  <label style="margin-right: 20px;">
+    <input type="checkbox" class="individual" name="paymentMethod" value="razorpay">
+    Razorpay
+  </label>
+</div>
 
   <button  style="display: none;" onclick="generateReport()">Generate Report</button>
 </div>
@@ -221,6 +248,42 @@
  
  
  <script>
+
+
+  const allCheckbox = document.getElementById('all');
+  const individualCheckboxes = document.querySelectorAll('.individual');
+
+  function logStatus() {
+    const status = {
+      all: allCheckbox.checked,
+    };
+    individualCheckboxes.forEach(cb => {
+      status[cb.value] = cb.checked;
+    });
+    return status;
+  }
+
+  allCheckbox.addEventListener('change', function () {
+    if (this.checked) {
+      individualCheckboxes.forEach(cb => cb.checked = false);
+    }
+    generateReport();
+  });
+
+  individualCheckboxes.forEach(cb => {
+    cb.addEventListener('change', function () {
+      if (this.checked) {
+        allCheckbox.checked = false;
+      } else {
+        const noneChecked = Array.from(individualCheckboxes).every(cb => !cb.checked);
+        if (noneChecked) {
+          allCheckbox.checked = true;
+        }
+      }
+      generateReport();
+    });
+  });
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -276,9 +339,14 @@ function formatDate(date) {
 }
 
 
-async function generateReport() {
+  async function generateReport() {
+
+
   const startInput = document.getElementById("startDate").value;
   const endInput = document.getElementById("endDate").value;
+
+
+  let filterObject = logStatus()
 
   if (!startInput || !endInput) {
     Swal.fire("Error", "Please select both start and end dates.", "error");
@@ -293,6 +361,15 @@ async function generateReport() {
     return;
   }
 
+  let paymentMethodFilter;
+  if (filterObject.all) {
+    paymentMethodFilter = ["all"];
+  } else {
+    paymentMethodFilter = Object.entries(filterObject)
+      .filter(([key, checked]) => key !== "all" && checked)
+      .map(([key]) => key);
+  }
+
   try {
     const response = await fetch("/admin/salesReport", {
       method: "POST",
@@ -300,6 +377,7 @@ async function generateReport() {
       body: JSON.stringify({
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
+        paymentMethod: paymentMethodFilter,  // send array of selected payment methods
       }),
     });
 

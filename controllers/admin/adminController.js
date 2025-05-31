@@ -64,9 +64,9 @@ const loadDashboard = async (req, res) => {
             totalRevenue = parseFloat(totalRevenue).toFixed(2)
 
 
-            // const topProducts = await topSellingHandler()
             const topProducts = await getTopSellingProducts(10);
             const topCategories = await getTopSellingCategories(10);
+            const topBrands = await getTopSellingBrands(10)
 
             const recentOrders = await getRecentOrders()
             const salesData = await getSalesDataHelper("monthly")
@@ -81,7 +81,9 @@ const loadDashboard = async (req, res) => {
                 totalRevenue,
                 topProducts,
                 topCategories,
+                topBrands,
                 recentOrders,
+
 
                 salesData: salesData.data,
                 salesLabels: salesData.labels,
@@ -147,8 +149,11 @@ const topSellingHandler = async (req, res) => {
 };
 
 const getTopSelling = async (req, res) => {
+
     try {
         const { type } = req.query;
+
+        console.log(type, " From backend router")
 
         if (type === "categories") {
             const topCategories = await Order.aggregate([
@@ -194,7 +199,48 @@ const getTopSelling = async (req, res) => {
             ]);
 
             res.json({ categories: topCategories });
-        } else {
+        }
+
+        else if (type === "brands") {
+            const topBrands = await Order.aggregate([
+                { $match: { status: "Delivered" } },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "product",
+                        foreignField: "_id",
+                        as: "productDetails",
+                    },
+                },
+                { $unwind: "$productDetails" },
+
+                {
+                    $group: {
+                        _id: "$productDetails.brand", // group by brand name or ID
+                        productCount: { $addToSet: "$productDetails._id" },
+                        soldCount: { $sum: "$qty" },
+                        totalSales: { $sum: { $multiply: ["$price", "$qty"] } },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: "$productDetails.name",
+                        productCount: { $size: "$productCount" },
+                        soldCount: 1,
+                        totalSales: 1,
+                    },
+                },
+                { $sort: { soldCount: -1 } },
+                { $limit: 10 },
+            ]);
+
+            res.json({ brands: topBrands });
+
+        }
+
+
+        else {
             const topProducts = await Order.aggregate([
                 { $match: { status: "Delivered" } },
                 {
@@ -244,6 +290,50 @@ const getTopSelling = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+
+const getTopSellingBrands = async () => {
+    try {
+        const brandReport = await Order.aggregate([
+            { $match: { status: "Delivered" } },
+
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "product",
+                    foreignField: "_id",
+                    as: "productDetails",
+                },
+            },
+            { $unwind: "$productDetails" },
+
+            {
+                $group: {
+                    _id: "$productDetails.brand",
+                    totalSoldQty: { $sum: "$qty" },
+                    totalRevenue: { $sum: "$finalAmount" },
+                },
+            },
+
+            {
+                $project: {
+                    brand: "$_id",
+                    totalSoldQty: 1,
+                    totalRevenue: 1,
+                    _id: 0
+                },
+            },
+
+            { $sort: { totalSoldQty: -1 } },
+        ]);
+
+        return brandReport;
+    } catch (error) {
+        console.error("Error generating brand-wise report:", error);
+        return [];
+    }
+};
+
 
 
 const getTopSellingCategories = async () => {
