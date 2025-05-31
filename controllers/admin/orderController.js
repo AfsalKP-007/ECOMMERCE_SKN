@@ -274,9 +274,20 @@ const generateSalesReport = async (req, res) => {
       toDate.setHours(23, 59, 59, 999); // Set to 11:59:59.999 PM
     }
 
+
+    let paymentMethods = req.body.paymentMethod || [];
+
+    // If paymentMethods contains 'all', don't filter by paymentMethod
+    let paymentFilter = {};
+    if (!paymentMethods.includes("all") && paymentMethods.length > 0) {
+      paymentFilter = { paymentMethod: { $in: paymentMethods } };
+    }
+    // else paymentFilter stays empty (no filter on paymentMethod)
+
     const orders = await Order.find({
-      createdOn: { $gte: new Date(fromDate), $lte: new Date(toDate) }
-    }).populate('product').sort({ createdOn: -1 });;
+      createdOn: { $gte: fromDate, $lte: toDate },
+      ...paymentFilter
+    }).populate('product').sort({ createdOn: -1 });
 
     // Calculate summary
     const summary = {

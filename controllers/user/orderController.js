@@ -137,10 +137,55 @@ const addOrder = async (req, res) => {
       orders.push(newOrder)
 
 
+      // Wallet ----------------- afsal
+      if (paymentMethod === "wallet") {
+        let wallet = await Wallet.findOne({ userId });
+
+        if (!wallet) {
+          wallet = new Wallet({
+            userId,
+            balance: 0,
+            transactions: [
+              {
+                type: "debit",
+                amount: finalItemAmount,
+                description: `Product Purchased With Order ${newOrder._id}`,
+                date: new Date(),
+              },
+            ],
+          });
+          wallet.balance -= finalItemAmount;
+        } else {
+          wallet.balance -= finalItemAmount;
+          wallet.transactions.push({
+            type: "debit",
+            amount: finalItemAmount,
+            description: `Product Purchased With Order ${newOrder._id}`,
+            date: new Date(),
+          });
+        }
+
+        await wallet.save();
+
+        await Transaction.create({
+          userId: userId,
+          amount: finalItemAmount,
+          transactionType: "debit",
+          paymentMethod: "wallet",
+          paymentGateway: "razorpay",
+          status: "completed",
+          purpose: "purchase",
+          description: `Product Purchased With Order ${newOrder._id}`,
+          orders: [{ orderId: newOrder._id, amount: newOrder.finalAmount }],
+          walletBalanceAfter: wallet.balance,
+        });
+      }
+
+
       /// razor pay
-      if (paymentMethod === "razorpay") {
+      else if (paymentMethod === "razorpay") {
         const { razorpay_payment_id } = req.body;
-        console.log(req.body)
+
 
         if (!razorpay_payment_id) {
           console.error("Missing razorpay_payment_id");
@@ -178,6 +223,7 @@ const addOrder = async (req, res) => {
         product.stock = Math.max(0, product.stock - item.qty)
         await product.save()
       }
+
     }
 
     await Cart.findOneAndDelete({ userId })

@@ -235,7 +235,7 @@ button:active {
                 <span><%= product.name %></span>
                                         </td>
                                         <td><%= product.category %></td>
-                                        <td>₹<%= product.price.toLocaleString() %></td>
+                                        <td>₹<%= parseFloat(product.price).toFixed(2) %></td>
                                         <td><%= product.soldCount %></td>
                                     </tr>
                                 <% }); %>
@@ -268,7 +268,7 @@ button:active {
                                     <tr>
                                         <td><a href="/admin/orders/<%= order._id %>" class="text-primary">#<%= order.orderId.slice(-6) %></a></td>
                                         <td><%= order.customerName %></td>
-                                        <td>₹<%= order.finalAmount.toLocaleString() %></td>
+                                        <td>₹<%= parseFloat(order.finalAmount).toFixed(2) %></td>
                                         <td>
                                             <% if (order.status === 'delivered') { %>
                                                 <span class="status-badge status-delivered">Delivered</span>
@@ -508,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <tr>
                                     <td>${category.name}</td>
                                     <td>${category.productCount}</td>
-                                    <td>₹${category.totalSales.toLocaleString()}</td>
+                                    <td>₹${ parseFloat(category.totalSales).toFixed(2)}</td>
                                     <td>${category.soldCount}</td>
                                 </tr>
                             `;
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <span>${product.name}</span>
                                     </td>
                                     <td>${product.category}</td>
-                                    <td>₹${product.price.toLocaleString()}</td>
+                                    <td>₹${ parseFloat(product.price).toFixed(2)}</td>
                                     <td>${product.soldCount}</td>
                                 </tr>
                             `;
