@@ -54,8 +54,6 @@ const loadDashboard = async (req, res) => {
             const orders = await Order.find({ status: "Delivered" })
 
             let totalRevenue = orders.reduce((total, order) => {
-
-                console.log(order.finalAmount)
                 total += order.finalAmount
                 return total
 
@@ -427,6 +425,7 @@ const getTopSellingProducts = async (limit = 5) => {
         ]);
 
         return topProducts;
+        
     } catch (error) {
         console.error("Error getting top products:", error);
         return [];

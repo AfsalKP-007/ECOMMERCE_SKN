@@ -14,6 +14,9 @@ const MongoStore = require('connect-mongo');
 
 const path = require("path")
 
+
+const errorHandler = require('./middlewares/errorHandler');
+
 connectDB();
 
 // Use morgan middleware
@@ -75,6 +78,29 @@ app.set('views', [path.join(__dirname, 'views/user'), path.join(__dirname, 'view
 app.use("/", userRouter)
 app.use("/admin", adminRouter)
 app.use('/uploads', express.static('uploads'));
+
+
+
+
+
+// -----------------------------------------------------
+
+///   Error handling Middle ware attach
+
+// // If no route matches, show 404
+// app.use((req, res, next) => {
+//     res.status(404).render('error', {
+//         message: "Page Not Found",
+//         error: {}
+//     });
+// });
+
+// // Central error handler
+// app.use(errorHandler);
+
+
+// -----------------------------------------------------
+
 
 
 // Start the server
